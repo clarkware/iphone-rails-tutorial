@@ -1,12 +1,12 @@
-RailsConf 2010 Tutorial Bootstrap
-=================================
+RailsConf 2010 Tutorial
+=======================
 
 Planning on attending my [Mobile App Development with iPhone/iPad and
 Rails](http://en.oreilly.com/rails2010/public/schedule/detail/14136) tutorial at RailsConf this year?  Great - I look forward to meeting you!
 
 Unfortunately, our time together is fairly limited.  Just like any well-run software project, we'll need to be mindful of scope.  Our overall goal is to build an iPhone app ([screenshots](http://github.com/clarkware/iphone-rails-tutorial/raw/master/screenshots/iphone-app.png)) that talks to a Rails app ([try it!](http://saveup.heroku.com/about)) using RESTful resources.  Along the way we'll explore several libraries and delve into topics such as authentication, nested resources, and asynchronous communication.  To do all that in three hours time, I'll assume that you have a basic working knowledge of Objective-C and a general understanding of iPhone table view programming.  
 
-How do you know if you're ready? I'm glad you asked. In the <tt>projects/1-bootstrap</tt>
+How do you know if you're ready? I'm glad you asked. In the <tt>code/1-bootstrap</tt>
 directory of this project you'll find a basic iPhone app that shows a read-only table of data.
 (No, you couldn't even charge 99 cents for this app.) 
 
@@ -16,9 +16,7 @@ You're ready to attend if...
 * You're comfortable with the Objective-C syntax used in this app
 * You understand the table view programming used in this app
 
-New to iPhone programming and still want to attend?  You're welcome just the same! But you'll get more out of the tutorial if you spend some time preparing beforehand.  Below you'll find steps for installing required software and suggested resources to help you prepare for the tutorial.        
-
-In coming weeks, I'll add the source for incremental versions of the iPhone app and the final Rails app, as well as the workbook we'll follow during the tutorial. Stay tuned!  
+New to iPhone programming and still want to attend?  You're welcome just the same! But you'll get more out of the tutorial if you spend some time preparing beforehand.  Below you'll find steps for installing required software and suggested resources to help you prepare for the tutorial.
 
 See you there...
 
