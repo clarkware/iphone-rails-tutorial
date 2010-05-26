@@ -1,0 +1,222 @@
+body {
+	background: white;
+}
+
+:link, :visited {
+  text-decoration: underline; 
+  color: #4E6487;
+}
+
+code {
+  font-family: Monaco;
+}
+
+.caption {
+  color: #448;
+  font-family: Gill Sans;
+  font-size: 70%;
+}
+
+.caption {
+  color: #448;
+  font-family: Gill Sans;
+  font-size: 70%;
+}
+
+p.loud {
+  color: #666;
+  font-size: 2em;
+  text-align: center;
+  display: block;
+  margin: 2em auto;
+}
+
+div#header {
+	background: white;
+	display: none;
+}
+
+div#footer {
+  background: #E4E4E4;
+  border-top: 1px solid #ccc;
+}
+
+#footer h2 { 
+  font-size: .75em;
+  font-weight: normal;
+  position: absolute; 
+  left: 0; 
+  bottom: 1.5em;
+}
+
+div.codeurl {
+	margin-top: .35em;
+	margin-bottom: 1.5em;
+	padding-right: .5em;
+	text-align: right;
+	font-size: .5em;
+}
+
+div.codeurl a {
+  color: #617998;
+}
+
+/* SLIDE CONTROLS */
+
+#controls {font-size: 0.75em;}
+
+#currentSlide {font-size: 0.5em;}
+#currentSlide span {font-size: 13px; color: #AAB;}
+#currentSlide #csSep {display: none;}
+#currentSlide #csHere {font-weight: bold;}
+#currentSlide #csTotal:before {content: " of ";}
+
+div#controls #navLinks a {
+  background: none;
+  color: #AAB;
+}
+
+#currentSlide {
+  text-align: center; 
+  font-size: 0.5em; 
+  color: #AAB;
+}
+
+/* SLIDE LAYOUT */
+
+div.title {
+  height: 100%;
+  background-image: url(../images/iphone.png);
+  background-repeat: no-repeat;
+  background-position: 90% 60%;
+}
+
+div#slide0 h1, div.title h1 {
+  color: #617998;
+  font-size-adjust: none;
+  font-stretch: normal;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: bold;
+  line-height: normal;
+  margin: 10% 0 0 0;
+  padding: 0;
+  position: static;
+  white-space: normal;
+}
+
+div#slide0 h1 {
+  text-align: center;
+  padding-bottom: .5em;
+}
+
+div#slide0 blockquote {
+	color: #4C4C4C;
+  text-align: center;
+	font-size: 1.35em;
+	font-style: normal;
+	padding-top: .5em;
+}
+
+div.slide h1 {
+  background: white;
+  color: #617998;
+  left: 1em;
+  top: 0.5em;
+  width: 95%;
+  padding: 0;
+  border-bottom: 3px solid #ccc;
+  text-transform: none;
+}
+
+div.slide p.first {
+  margin-top: 0 !important;
+}
+
+div.slide img {
+  display: block;
+  margin: 0 auto;
+  margin-top: -1em;
+}
+
+div.hint {
+  text-align: center;
+  font-size: 85%;
+  color: #B1B1B1;
+  margin-top: 1.5em;
+}
+
+div.slide code {
+  font-weight: normal;
+  font-size: 80%;
+  color: #586D8A;
+}
+    
+div.slide ul, div.slide ol {
+  margin-left: 0 !important;
+  margin-top: 0 !important;
+}
+
+div.slide td {
+  padding: 0.3em 1em;
+}
+
+div.slide th {
+  background: #337;
+  color: white;
+  font-weight: bold;
+  padding: 0.2em 0em 0.2em 0em;    
+}
+
+/* CODE LAYOUT */
+
+div.code-superlarge {
+	font-size: 150% !important;
+	line-height: 1.6em !important;
+}
+
+div.code-large {
+	font-size: 85% !important;
+	line-height: 2em !important;
+}
+
+div.code-normal {
+	font-size: 75% !important;
+	line-height: 2em !important;
+}
+
+div.code-normal li {
+	margin-top: 0.6em;
+}
+
+div.code-medium {
+	font-size: 65% !important;
+	line-height: 2em !important;
+}
+
+div.code-small {
+	font-size: 50% !important;
+	line-height: 2em !important;
+}
+
+div.code-small li {
+	margin-top: 0.6em;
+}
+
+div.code-tiny {
+	font-size: 40% !important;
+	line-height: 2em !important;
+}
+
+div.code-tiny li {
+	margin-top: 0.6em;
+}
+
+div.code-supertiny {
+   font-size: 33% !important;	
+   line-height: 2em !important;
+}
+
+div.code-supertiny li {
+	margin-top: 0.6em;
+}

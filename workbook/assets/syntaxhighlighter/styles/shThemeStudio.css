@@ -1,0 +1,155 @@
+/************************************
+ * Pragmatic Studio Syntax Highlighter theme. 
+ ************************************/
+
+.syntaxhighlighter,
+.syntaxhighlighter div,
+.syntaxhighlighter code,
+.syntaxhighlighter table,
+.syntaxhighlighter table td,
+.syntaxhighlighter table tr,
+.syntaxhighlighter table tbody
+{
+  font-family: "Menlo", "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+}
+
+.syntaxhighlighter {	
+  background-color: #fff !important; 	
+ 	overflow: auto !important;
+ 	padding: 10px 0 !important;
+  border: 1px solid #ccc !important;
+  font-size: 100% !important;
+  margin-bottom: 0px !important;
+}
+
+.syntaxhighlighter ol {
+  margin-top: 1px !important;
+  margin-bottom: 10px !important;
+  padding: 0px !important;
+}
+
+.syntaxhighlighter ol li {
+  line-height: 120% !important;
+  margin-top: 0px !important; 
+  margin-bottom: 0px !important; 
+}
+
+/* Highlighed line number */
+.syntaxhighlighter .line.highlighted .number {
+	color: black !important;
+}
+
+/* Highlighed line */
+.syntaxhighlighter .line.highlighted.alt1,
+.syntaxhighlighter .line.highlighted.alt2 {
+	background-color: #FFFFC1 !important;
+}
+
+/* Gutter line numbers */
+.syntaxhighlighter .line .number {
+	color: #afafaf !important;
+}
+
+/* Add border to the lines */
+.syntaxhighlighter .line .content {
+	border-left: 3px solid #6CE26C !important;
+	color: #000 !important;
+}
+
+.syntaxhighlighter.printing .line .content {
+	border: 0 !important;
+}
+
+/* First line */
+.syntaxhighlighter .line.alt1 {
+	background-color: #fff !important;
+}
+
+/* Second line */
+.syntaxhighlighter .line.alt2 {
+	background-color: #F8F8F8 !important;
+}
+
+.syntaxhighlighter .toolbar {
+	background-color: #F8F8F8 !important;
+	border: #E7E5DC solid 1px !important;
+}
+
+.syntaxhighlighter .toolbar a {
+	color: #a0a0a0 !important;
+}
+
+.syntaxhighlighter .toolbar a:hover {
+	color: red !important;
+}
+
+/************************************
+ * Actual syntax highlighter colors.
+ ************************************/
+ 
+.syntaxhighlighter .plain,
+.syntaxhighlighter .plain a { 
+	color: #000 !important;
+}
+
+.syntaxhighlighter .comments,
+.syntaxhighlighter .comments a { 
+	color: #7F7F7F !important;
+}
+
+.syntaxhighlighter .string,
+.syntaxhighlighter .string a {
+  color: #026909 !important;
+	font-style: italic !important;
+}
+
+.syntaxhighlighter .keyword { 
+	color: #33B !important;	
+/*  font-weight: bold !important; */	
+  font-weight: normal !important;
+}
+
+.syntaxhighlighter .preprocessor { 
+	color: gray !important; 
+}
+
+/* @variables */
+.syntaxhighlighter .variable { 
+	color: #308394 !important; 
+	font-weight: normal !important;	
+}
+
+.syntaxhighlighter .value { 
+	color: #090 !important; 
+}
+
+.syntaxhighlighter .functions { 
+	color: #0002A2 !important; 
+}
+
+.syntaxhighlighter .constants { 
+	color: #0066CC !important; 
+}
+
+.syntaxhighlighter .script { 
+	background-color: yellow !important;
+}
+
+/* Built-in Classes */
+.syntaxhighlighter .color1,
+.syntaxhighlighter .color1 a { 
+	color: #575BF5 !important; 
+}
+
+/* Symbols */
+.syntaxhighlighter .color2,
+.syntaxhighlighter .color2 a { 
+	color: #C4050A !important; 
+}
+
+.syntaxhighlighter .color3,
+.syntaxhighlighter .color3 a { 
+	color: red !important; 
+}

@@ -1,0 +1,67 @@
+/* The following rule is necessary to have all slides appear in print! DO NOT REMOVE IT! */
+@page {
+    size: 8.5in 11in;
+    margin: .75in 0.5in .75in 0.5in
+}
+
+@page :left {
+    @top-left {
+        content: "Wibble";
+    }
+}
+
+body div.slide, ul {
+  page-break-inside: avoid !important; 
+  widows: 20;
+  orphans: 20;
+  visibility: visible !important;
+}
+
+body div.slide {
+  page-break-before: auto;
+  clear: both;
+  margin-bottom: 1in;
+}
+
+h1 {page-break-after: avoid;}
+
+body {margin-left: 75px; font-size: 12pt; background: blue;}
+* {color: black;}
+
+body div div#slide0 h1, body div div.title h1 {
+  page-break-before: always;
+  font-size: 200%; 
+  border: 2px solid black; 
+  margin: 0.5em 0 0.25em;
+  padding: 1em 1em 1em 1em;
+  color: black;
+  text-align: center;    
+}
+
+div#slide0 {margin-bottom: 3em;}
+
+body div.slide h1 {
+    color: black;
+    text-transform: none;
+    font-size: 150%;
+}
+
+.extra {background: transparent !important;}
+div.extra, pre.extra, .example {font-size: 10pt; color: #333;}
+ul.extra a {font-weight: bold;}
+p.example {display: none;}
+
+#header {display: none;}
+#footer h1 {margin: 0; border-bottom: 1px solid; color: gray; font-style: italic;}
+#footer h2, #controls {display: none;}
+
+/* The following rule keeps the layout stuff out of print.  Remove at your own risk! */
+.layout, .layout * {display: none !important;}
+
+
+
+/* code layout */
+div div.code-large, div div.code-small, div div.code-normal, div div.code-tiny, div div.code-supertiny {
+	font-size: 80% !important;
+	line-height: 1.6em !important;
+}
