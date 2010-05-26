@@ -1,0 +1,341 @@
+body {
+  background: #000;
+  font-family: Verdana, Helvetica, sans-serif;
+  font-size: small;
+}
+
+h3 {
+  font-weight: bold;
+  color: #555;
+}
+
+div.clear {
+  clear: both;
+  overflow: hidden;
+  height: 0px;
+  display: block;
+}
+
+div.break {
+  border-top: 2px dotted #ccc;
+  margin: 1.5em 0;
+}
+
+p.hint {
+  color: #555;
+}
+
+.separator {
+  color: #333;
+}
+
+.empty {
+  color: #aaa;
+  font-size: 1.35em;
+  text-align: center;
+}
+
+/* LINKS */
+
+a img {
+  border: none;
+}
+
+a:link, a:visited {
+  color: #6D96BB;
+  text-decoration: none;
+}
+
+a:hover, a:active {
+  color: #000;
+  text-decoration: none;
+}
+
+a.destructive {
+  color: #D00;
+  background: none;
+  text-decoration: none;
+}
+
+/* LAYOUT */
+
+#container {
+  width: 85%;
+  margin: 0 auto;
+  background-color: #000;
+}
+
+#header h1 {
+  font-size: 2.5em;
+  text-align: left;
+  color: #84A7C8;
+}
+
+#header span.actions {
+  font-size: .5em;
+  float: right;
+  line-height: 2.5em;
+  color: #aaa;
+}
+
+#header span.actions a {
+  color: #aaa;
+}
+
+#header span.actions a:hover, #header span.actions a:active {
+  color: #84A7C8;
+  background: #000;
+  text-decoration: none;
+}
+
+#content {
+  background-color: #FFF;
+  padding: 20px 40px;
+}
+
+#banner {
+  text-align: left;
+  background: #E3E3E3;
+  margin: -20px -40px 0px -40px;
+  border-bottom: 2px solid #ccc;
+  padding: .25em 1.5em;  
+}
+
+#banner .separator {
+  color: #A7A7A7;
+}
+
+#banner h2 {
+  font-size: 1.75em;
+  color: #555;
+}
+
+#banner h2 span.actions {
+  font-weight: normal;
+  font-size: .65em;
+  float: right;
+  line-height: 2.5em;
+}
+
+#footer {
+  font-size: .85em;
+  text-align: center;
+  color: #434343;
+  padding-top: 1.5em;
+}
+
+#footer a {
+  text-decoration: underline;
+}
+
+#footer a {
+  color: #434343;
+  text-decoration: underline;
+}
+
+/* FORMS */
+
+form {
+  padding: 0;
+  margin: 0;
+}
+
+fieldset {
+  border: 0;
+  margin: 1em 0;
+  padding: 0;
+}
+
+form label {
+  color: #555;
+  display: block;
+  font-size: 1.1em;
+  font-weight: normal;
+  padding-bottom: 2px;
+}
+
+form label.required {
+  font-weight: bold;
+}
+
+form .hint {
+  color: #555;
+  display: block;
+  font-size: 0.9em;
+  font-style: italic;  
+}
+
+form input {
+  font-size: 1.25em;
+}
+
+form input:submit {
+  font-size: 1.25em; 
+}
+
+form select {
+  font-size: 1.25em;
+}
+
+input:focus,
+textarea:focus {
+  background: #ffc;
+}
+
+/* GOALS */
+
+.over {
+  color: #000;
+}
+
+.under {
+  color: #D00;
+}
+
+.goal_amount {
+  color: #aaa;
+}
+
+#goal #summary {
+  text-align: center; 
+  padding: 1em; 
+  font-size: 1.5em;
+}
+
+#goal p.credit-form {
+  font-weight: bold;
+  color: #555;
+}
+
+#goals-table {
+  margin-top: 1em;
+  width: 100%;
+  font-size: 1.5em;
+  border: 0;
+}
+
+#goals-table td {
+/*  border-bottom: 3px solid #ebebeb;*/  
+  padding: 12px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+#goals-table td.name {
+  text-align: left;
+}
+
+#goals-table td.goal {
+  text-align: right;
+}
+
+#goals-table td.remaining {
+  text-align: right;
+}
+
+/* CREDITS */
+
+#credits-table {
+  width: 60%;
+  margin: 1em auto;
+  font-size: 1.35em;
+  border: 0;
+}
+
+#credits-table td {
+  padding: 6px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+#credits-table td.name {
+  text-align: left;
+}
+
+#credits-table td.amount {
+  text-align: right;
+}
+
+#credits-table td.delete {
+  text-align: right;
+}
+
+/* ABOUT */
+
+#about p {
+  color: #535353;
+  font-size: 150%;
+}
+
+#about .video {
+  margin: 2em 0;
+  text-align: center;
+}
+
+/* FLASHES */
+
+#flash_notice,
+#flash_warning,
+#flash_error {
+  color: #fff;
+  margin-top: 1em;
+  padding: 15px 0;
+  text-align: center;
+}
+
+#flash_notice {
+  background-color: #090;
+}
+
+#flash_warning {
+  background-color: #FC0;
+}
+
+#flash_error {
+  background-color: #F00;
+}
+
+/* INLINE FORM ERRORS */
+
+.error_message {
+  display: block;
+  color: #C40000;
+  font-size: 1em;
+  padding-top: 3px;
+}
+
+/* SCAFFOLDING ERRORS */
+
+#errorExplanation {
+  width: 400px;
+  border: 2px solid #CF0000;
+  padding: 0px;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+}
+
+#errorExplanation h2 {
+  text-align: left;
+  font-weight: bold;
+  padding: 5px 5px 5px 15px;
+  font-size: 12px;
+  margin: 0px;
+  background-color: #c00;
+  color: #fff;
+}
+
+#errorExplanation p {
+  color: #333;
+  margin-bottom: 0;
+  padding: 8px;
+}
+
+#errorExplanation ul {
+  margin: 2px 24px;
+}
+
+#errorExplanation ul li {
+  font-size: 12px;
+  list-style: disc;
+}

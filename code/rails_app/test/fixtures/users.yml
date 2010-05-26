@@ -1,0 +1,7 @@
+<% SALT = "NaCl" unless defined?(SALT) %> 
+
+default:
+  username: saver
+  email: saver@saveup.com
+  password_salt: <%= SALT %>
+  password_hash: <%= User.encrypted_password('testing', SALT) %>

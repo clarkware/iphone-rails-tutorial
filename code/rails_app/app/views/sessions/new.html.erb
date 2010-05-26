@@ -1,0 +1,22 @@
+<% banner "Login" %>
+    
+<p class="hint">
+  Don't have an account yet? 
+  <%= link_to "Join now!", join_path %>
+</p>
+
+<%= form_tag sessions_path do %>
+<fieldset>
+  <p>
+    <%= label_tag :login, 'Login or E-mail', :class => 'required' %>
+    <%= text_field_tag 'session[login]', @login, :size => 20 %>
+  </p>
+  <p>
+    <%= label_tag :password, 'Password', :class => 'required' %>
+    <%= password_field_tag 'session[password]', @password, :size => 20 %>
+  </p>
+  <p>
+	  <%= submit_tag 'Log In', :class => 'button' %>
+	</p>
+</fieldset>	
+<% end %>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title><%= @page_title || "Save Up - Making money less abstract" %></title>
+  <%= stylesheet_link_tag 'application' %>
+  <%= javascript_include_tag :defaults %>
+  <%= csrf_meta_tag %>
+</head>
+<body>
+  <div id="container">
+  <div id="header">
+    <h1>Save Up <%= navigation_links %></h1>
+  </div>
+  <div id="content">
+    <%= yield :banner %>
+    <% flash.each do |name, message| %>
+      <%= content_tag :div, message, :id => "flash_#{name}" %>
+    <% end %>
+    <%= yield :layout %>
+  </div>
+  <div id="footer">
+    <h3>
+      Now available on your iPhone!
+    </h3>
+    <p> 
+      Copyright &copy; 2010 <a href="http://pragmaticstudio.com">The Pragmatic Studio</a>
+      &bull; Custom made for a 
+      <a href="http://en.oreilly.com/rails2010/public/schedule/detail/14136"> RailsConf 2010  tutorial</a>
+    </p>
+  </div>
+  </div>
+</body>
+</html>

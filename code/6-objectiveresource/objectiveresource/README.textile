@@ -1,0 +1,39 @@
+h2. Overview
+
+ObjectiveResource is a port of Rails' ActiveResource framework to Objective-C.
+
+The primary purpose of this project is to quickly and easily connect 
+iPhone applications with servers running Rails. 
+
+This project relies on ObjectiveSupport, which aims to provide some popular 
+Rubyisms to Objective-C. If you checkout this project using git, you can
+pull down ObjectiveSupport by doing a "git submodule init" followed by
+a "git submodule update".
+
+h2. Getting Started
+
+h3. Sample Code
+
+This project comes bundled with a sample iPhone application and a sample
+Rails application. To see how everything works together you can open
+up the .xcodeproj and fire up a rails server in sample_rails_app.
+
+h3. Integrating with your project
+
+# Download (clone) the objectiveresource project
+## If you do a git clone, you will need to follow it up with "git submodule init" and "git submodule update"
+# open the .xcodeproj in XCode for both objectiveresource and your iPhone project
+# drag the ObjectiveResource and ObjectSupport groups from the objectiveresource project onto your iPhone project, making
+sure to check the "copy files" box.
+
+h2. Contributing
+
+h3. Running Tests
+
+Unit testing makes use of the SenTest work-alike from Google Toolbox for Mac.
+
+To run the tests, select the "Unit Tests" target in XCode and Build and Run.
+
+You will need to have Rails installed along with the populator and faker
+gems, as the project uses a "Run Script" to setup a local Rails
+server for testing.

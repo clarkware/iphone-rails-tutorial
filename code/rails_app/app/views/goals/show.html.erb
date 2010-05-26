@@ -1,0 +1,37 @@
+<% banner "Goal: #{h(@goal.name)}", 
+  link_to('Edit', edit_goal_path(@goal)),
+  link_to('Delete', @goal, :confirm => 'Sure?', :method => :delete) %>
+
+<div id="goal">
+
+<div id="summary">
+  <%= render 'summary', :goal => @goal %>
+</div>
+
+<div class="break"></div>
+
+<div id="credits">
+  <% if @goal.credits.any? %>  
+    <%= render 'credits', :credits => @goal.credits, :goal => @goal %>
+  <% else %>
+    <p class="empty">
+      No goal credits (yet).  Go on, add one already!
+    </p>
+  <% end %>
+</div>
+
+<div class="break"></div>
+
+<h3>Add a credit</h3>
+
+<%= form_for([@goal, @credit], :remote => true) do |f| %>
+  <p class="credit-form">
+    $<%= f.text_field :amount, :size => 6 %> 
+    <strong>on</strong>
+    <%= f.text_field :name %>
+  </p>
+  <%= f.submit 'Add this credit' %> or 
+  <%= cancel_link goals_path %>
+<% end %>
+
+</div>

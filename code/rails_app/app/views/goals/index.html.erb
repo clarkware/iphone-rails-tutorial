@@ -1,0 +1,30 @@
+<% banner 'Goals', link_to('Create new goal', new_goal_path) %>
+           
+<% unless @goals.any? %>
+<p class="empty">
+  No goals (yet).  Go on, <%= link_to('create one already!', new_goal_path) %>
+</p>
+<% end %>
+  
+<table id="goals-table" cellpadding="0" cellspacing="0">
+<% @goals.each do |goal| %>
+  <tr>
+    <td class="name">
+      <%= link_to goal.name, goal %>
+    </td>
+    <td class="goal">
+      <span class="goal_saved">
+        <%= number_to_currency(goal.saved) %> 
+      </span>
+      <span class="goal_amount">
+        of <%= number_to_currency(goal.amount) %>
+      </span>
+    </td>
+    <td class="remaining">
+      <span class="<%= goal_total_class(goal) %>">
+        (<%= number_to_currency(goal.remaining.abs) %>)
+      </span>
+    </td> 
+  </tr>
+<% end %>
+</table>

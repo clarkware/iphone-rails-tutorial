@@ -1,0 +1,9 @@
+<span class="goal_saved">
+  <%= number_to_currency(goal.saved) %> 
+</span>
+<span class="goal_amount">
+  of <%= number_to_currency(goal.amount) %>
+</span>
+<span class="<%= goal_total_class(goal) %>">
+  (<%= number_to_currency(goal.remaining.abs) %>)
+</span>

@@ -1,0 +1,4 @@
+<% banner "#{h(@goal.name)} Credits", 
+          link_to('Create new credit', new_goal_credit_path(@goal)) %>
+
+<%= render 'goals/credits', :credits => @goal.credits, :goal => @goal %>

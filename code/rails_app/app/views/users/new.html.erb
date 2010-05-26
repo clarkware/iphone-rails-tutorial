@@ -1,0 +1,31 @@
+<% banner "Join" %>
+
+<p class="hint">
+  Already have an account? 
+  <%= link_to "Log in now!", login_path %>
+</p>
+
+<%= form_for @user do |f| %>
+<fieldset>
+  <%= f.error_messages %>
+  <p>
+    <%= f.label :username, nil, :class => 'required' %>
+    <%= f.text_field :username %>
+  </p>
+  <p>
+    <%= f.label :email, "E-mail Address", :class => 'required' %>
+    <%= f.text_field :email %>
+  </p>
+  <p>
+    <%= f.label :password, nil, :class => 'required' %>
+    <%= f.password_field :password %>
+  </p>
+  <p>
+    <%= f.label :password_confirmation, "Password Again", :class => 'required' %>
+    <%= f.password_field :password_confirmation %>
+  </p>
+  <p>
+	  <%= f.submit 'Create Account' %>
+	</p>
+</fieldset>
+<% end %>

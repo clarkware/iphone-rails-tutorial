@@ -1,0 +1,21 @@
+<% banner "#{@goal.name} Credit", 
+  link_to('Edit', edit_goal_credit_path(@goal, @credit)),
+  link_to('Delete', goal_credit_path(@goal, @credit), 
+           :confirm => 'Sure?', :method => :delete) %>
+
+<table id="credits-table" cellpadding="0" cellspacing="0">
+  <tr>
+    <td class="name">
+      <%= link_to @credit.name, 
+                  goal_credit_path(@credit.goal, @credit) %>
+    </td>
+    <td class="amount">
+      <%= number_to_currency(@credit.amount) %>
+    </td>
+  </tr>
+</table>
+
+<p>
+<%= link_to 'All credits for this goal', 
+            goal_credits_path(@goal) %>
+</p>

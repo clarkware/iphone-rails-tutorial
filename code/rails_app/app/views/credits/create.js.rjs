@@ -1,0 +1,10 @@
+page[:credits].replace_html :partial => 'goals/credits', 
+                             :locals  => {:goal => @goal, :credits => @goal.credits}
+
+page[:summary].replace_html :partial => 'goals/summary', 
+                            :locals  => {:goal => @goal}
+                             
+page.select('#flash_error').each { |e| e.hide}
+page[:summary].highlight
+page[:new_credit].reset
+page[:credit_amount].focus

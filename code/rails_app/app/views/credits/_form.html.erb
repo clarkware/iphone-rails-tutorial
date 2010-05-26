@@ -1,0 +1,8 @@
+<%= labeled_form_for([@goal, @credit]) do |f| %>
+<fieldset>  
+  <%= f.error_messages %>
+  <%= f.text_field :name %>
+  <%= f.text_field :amount, :size => 10 %>  
+  <%= f.submit %>
+</fieldset>
+<% end %>
