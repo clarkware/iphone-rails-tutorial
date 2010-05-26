@@ -18,6 +18,8 @@ You're ready to attend if...
 
 New to iPhone programming and still want to attend?  You're welcome just the same! But you'll get more out of the tutorial if you spend some time preparing beforehand.  Below you'll find steps for installing required software and suggested resources to help you prepare for the tutorial.
 
+Please clone this repo to your laptop before attending so you have all the code and workbook handy.
+
 See you there...
 
 Mike Clark
