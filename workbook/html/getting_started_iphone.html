@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>Mobile App Development with iPhone and Rails</title>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<!-- metadata -->
+<meta name="generator" content="S5" />
+<meta name="version" content="S5 1.1" />
+<meta name="presdate" content="June 6, 2010" />
+<meta name="author" content="Mike Clark" />
+<meta name="company" content="The Pragmatic Studio" />
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow" />
+<meta name="controlVis" content="hidden" />
+<!-- style sheet links -->
+<link rel="stylesheet" href="../assets/ui/default/slides.css" type="text/css" media="projection" id="slideProj" />
+<link rel="stylesheet" href="../assets/ui/default/outline.css" type="text/css" media="screen" id="outlineStyle" />
+<link rel="stylesheet" href="../assets/stylesheets/print.css" type="text/css" media="print" id="slidePrint" />
+<link rel="stylesheet" href="../assets/ui/default/opera.css" type="text/css" media="projection" id="operaFix" />
+<!-- Syntax Highlighter -->
+<link rel="stylesheet" href="../assets/syntaxhighlighter/styles/shCore.css" type="text/css" />
+<link rel="stylesheet" href="../assets/syntaxhighlighter/styles/shThemeStudio.css" type="text/css" />
+<link rel="stylesheet" href="../assets/stylesheets/pressie.css" type="text/css" />
+
+<!-- S5 JS -->
+<script src="../assets/ui/default/slides.js" type="text/javascript"></script>
+
+</head>
+<body>
+
+<div class="layout">
+  <div id="controls"><!-- DO NOT EDIT --></div>
+  <div id="currentSlide"><!-- DO NOT EDIT --></div>
+  <div id="header"></div>
+  <div id="footer">
+    <h2>Copyright &#169; 2010 The Pragmatic Studio</h2>
+  </div>
+</div>
+
+<div class="presentation">
+  
+<div class="slide"><h1>Getting Started: iPhone App</h1>
+</div>
+<div class="slide"><h1>Task: Table-Based App</h1>
+<p><img src="../assets/images/basic-table-view-delete.png" alt="" /></p>
+</div>
+<div class="slide"><h1>Steps</h1>
+<ol>
+	<li>Create an empty table-view app</li>
+	<li>Use an array as the backing store for the table</li>
+	<li>Populate the table with hard-coded goals</li>
+	<li>Handle deleting goals</li>
+</ol>
+</div>
+<div class="slide"><h1 class="exercise">1. Create the App</h1>
+<ol>
+	<li>Create a new <em>Navigation-based Application</em> (without Core Data)
+	<ul>
+		<li>name the project <em>SaveUp</em></li>
+	</ul></li>
+	<li>Set the <em>Active <span class="caps">SDK</span></em> to <em>iPhone Simulator (3.1.3)</em></li>
+	<li>Rename <code>RootViewController</code> to <code>GoalsViewController</code>
+	<ul>
+		<li>use Xcode refactoring (<code>⇧ ⌘ J</code>)</li>
+	</ul></li>
+	<li><em>Build and Run</em> the app as a sanity check
+	<ul>
+		<li>should see an empty table view</li>
+	</ul></li>
+</ol>
+</div>
+<div class="slide"><h1>Table View Data Source Methods</h1>
+<p class="first">How many sections in the table?</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView;</pre></div>
+<p>How many rows per section?</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">- (NSInteger)tableView:(UITableView *)tableView 
+ numberOfRowsInSection:(NSInteger)section;</pre></div>
+<p>What&#8217;s the table cell for a given section/row pair?</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">- (UITableViewCell *)tableView:(UITableView *)tableView 
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath;</pre></div>
+</div>
+<div class="slide"><h1 class="exercise">2. Set Up Table Data</h1>
+<p class="first">Add a <code>goals</code> instance variable and property to the <code>.h</code> file:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby">@interface GoalsViewController : UITableViewController {
+    NSMutableArray *goals;
+}
+
+@property (nonatomic, retain) NSArray *goals;
+
+@end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/1-bootstrap/Classes/GoalsViewController.h">../code/1-bootstrap/Classes/GoalsViewController.h</a></div></p>
+<p>Synthesize and dealloc it in the <code>.m</code> file:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby">@synthesize goals;
+
+- (void)dealloc {
+    [goals release];
+    [super dealloc];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/1-bootstrap/Classes/GoalsViewController.m">../code/1-bootstrap/Classes/GoalsViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">3. Hard-Code Some Goals</h1>
+<p class="first">Change the <code>viewDidLoad</code> method to initialize the <code>goals</code> array:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby; highlight: [7,8,9,10]">- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.title = @"Goals";
+    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+
+    NSMutableArray *data = [[NSMutableArray alloc] 
+        initWithObjects:@"iPad", @"Vacation", @"Donation", nil];
+    self.goals = data;
+    [data release];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/1-bootstrap/Classes/GoalsViewController.m">../code/1-bootstrap/Classes/GoalsViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">4. Populate the Table Rows</h1>
+<p class="first">Use the size of the <code>goals</code> array as the number of rows:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby">- (NSInteger)tableView:(UITableView *)tableView 
+ numberOfRowsInSection:(NSInteger)section {
+    return [goals count];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/1-bootstrap/Classes/GoalsViewController.m">../code/1-bootstrap/Classes/GoalsViewController.m</a></div></p>
+<p>Configure a row&#8217;s cell to contain the name of the goal at the given row:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby">    NSString *goal = [goals objectAtIndex:indexPath.row];
+    cell.textLabel.text = goal;
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/1-bootstrap/Classes/GoalsViewController.m">../code/1-bootstrap/Classes/GoalsViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">5. Run It!</h1>
+<p><img src="../assets/images/basic-table-view.png" alt="" /></p>
+</div>
+<div class="slide"><h1 class="exercise">6. Handle Deleting Goals</h1>
+<p class="first">Remove the deleted goal from the <code>goals</code> array:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby; highlight: 7">- (void)tableView:(UITableView *)tableView 
+commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
+ forRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView beginUpdates]; 
+    if (editingStyle == UITableViewCellEditingStyleDelete) { 
+
+        [goals removeObjectAtIndex:indexPath.row];
+
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
+                         withRowAnimation:UITableViewRowAnimationFade]; 
+    }
+    [tableView endUpdates]; 
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/1-bootstrap/Classes/GoalsViewController.m">../code/1-bootstrap/Classes/GoalsViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">7. Delete a Goal</h1>
+<p><img src="../assets/images/deleting-rows.png" alt="" /></p>
+<div class="hint">
+At this point, we&#8217;ve replicated the app in <code>code/1-bootstrap</code>
+</div></div>
+</div>
+
+<!-- Syntax Highlighter -->
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shCore.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushRuby.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushBash.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushXml.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushObjectiveC.js"></script>
+<script language="javascript">
+  SyntaxHighlighter.defaults['gutter'] = false;
+  SyntaxHighlighter.defaults['toolbar'] = false;
+  SyntaxHighlighter.all();
+</script>
+</body>
+</html>

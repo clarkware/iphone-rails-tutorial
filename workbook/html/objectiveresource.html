@@ -1,0 +1,395 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>Mobile App Development with iPhone and Rails</title>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<!-- metadata -->
+<meta name="generator" content="S5" />
+<meta name="version" content="S5 1.1" />
+<meta name="presdate" content="June 6, 2010" />
+<meta name="author" content="Mike Clark" />
+<meta name="company" content="The Pragmatic Studio" />
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow" />
+<meta name="controlVis" content="hidden" />
+<!-- style sheet links -->
+<link rel="stylesheet" href="../assets/ui/default/slides.css" type="text/css" media="projection" id="slideProj" />
+<link rel="stylesheet" href="../assets/ui/default/outline.css" type="text/css" media="screen" id="outlineStyle" />
+<link rel="stylesheet" href="../assets/stylesheets/print.css" type="text/css" media="print" id="slidePrint" />
+<link rel="stylesheet" href="../assets/ui/default/opera.css" type="text/css" media="projection" id="operaFix" />
+<!-- Syntax Highlighter -->
+<link rel="stylesheet" href="../assets/syntaxhighlighter/styles/shCore.css" type="text/css" />
+<link rel="stylesheet" href="../assets/syntaxhighlighter/styles/shThemeStudio.css" type="text/css" />
+<link rel="stylesheet" href="../assets/stylesheets/pressie.css" type="text/css" />
+
+<!-- S5 JS -->
+<script src="../assets/ui/default/slides.js" type="text/javascript"></script>
+
+</head>
+<body>
+
+<div class="layout">
+  <div id="controls"><!-- DO NOT EDIT --></div>
+  <div id="currentSlide"><!-- DO NOT EDIT --></div>
+  <div id="header"></div>
+  <div id="footer">
+    <h2>Copyright &#169; 2010 The Pragmatic Studio</h2>
+  </div>
+</div>
+
+<div class="presentation">
+  
+<div class="slide"><h1>Nested Resources</h1>
+</div>
+<div class="slide"><h1>Task: Goals and Credits</h1>
+<p><img src="../assets/images/nested-resources.png" alt="" /></p>
+</div>
+<div class="slide"><h1>ObjectiveResource</h1>
+<ul>
+	<li><a href="http://github.com/yfactorial/objectiveresource">ObjectiveResource</a> is an Objective-C port of <a href="http://api.rubyonrails.org/classes/ActiveResource/Base.html">ActiveResource</a></li>
+	<li>Automatically serializes/deserializes objects (to/from <span class="caps">JSON</span> or <span class="caps">XML</span>)</li>
+	<li>Assumes Rails&#8217; RESTful conventions</li>
+	<li>Supports nested resources</li>
+	<li>Synchronous, but with asynchronous option</li>
+</ul>
+</div>
+<div class="slide"><h1>Remote Resource (.h)</h1>
+<p class="first">Remote methods added to <code>NSObject</code>:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">#import "ObjectiveResource.h"
+ 
+@interface Goal : NSObject {
+    NSString *name;
+    NSString *amount;
+    NSString *goalId;
+    NSDate *createdAt;
+    NSDate *updatedAt;
+}
+ 
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *amount;
+@property (nonatomic, copy) NSString *goalId;
+@property (nonatomic, retain) NSDate *createdAt;
+@property (nonatomic, retain) NSDate *updatedAt;
+ 
+@end</pre></div>
+</div>
+<div class="slide"><h1>Remote Resource (.m)</h1>
+<p class="first">Nothing special here:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">#import "Goal.h"
+
+@implementation Goal
+
+@synthesize name;
+@synthesize amount;
+@synthesize goalId;
+@synthesize createdAt;
+@synthesize updatedAt;
+
+- (void)dealloc {
+    [name release];
+    [amount release];
+    [goalId release];
+    [createdAt release];
+    [updatedAt release];
+    [super dealloc];
+}
+@end</pre></div>
+</div>
+<div class="slide"><h1>Configuration</h1>
+<div class="code-normal">
+<pre name="code" class="brush: objc">#import "ObjectiveResource.h"    
+  
+[ObjectiveResourceConfig setSite:@"http://your-server/"]; 
+[ObjectiveResourceConfig setResponseType:JSONResponse];</pre></div>
+</div>
+<div class="slide"><h1>Remote <span class="caps">CRUD</span> Operations</h1>
+<div class="code-normal">
+<pre name="code" class="brush: objc">NSArray *goals = [Goal findAllRemote]; </pre></div>
+<div class="code-normal">
+<pre name="code" class="brush: objc">Goal *goal = [[Goal alloc] init]; 
+goal.name = @"Tropical Vacation"; 
+[goal createRemote]; </pre></div>
+<div class="code-normal">
+<pre name="code" class="brush: objc">Goal *goal = [Goal findRemote:@"3"]; 
+goal.name = @"Donation";
+[goal updateRemote];</pre></div>
+<div class="code-normal">
+<pre name="code" class="brush: objc">[goal destroyRemote];</pre></div>
+</div>
+<div class="slide"><h1 class="exercise">1. Switcheroo</h1>
+<ol>
+	<li>Switch back to the iPhone app in the <code>code/4-crud</code> directory
+	<ul>
+		<li>This version uses our custom <code>Resource</code> class</li>
+	</ul></li>
+	<li>Copy it to a new directory so you don&#8217;t overwrite the original</li>
+</ol>
+</div>
+<div class="slide"><h1 class="exercise">2. Add the objectiveresource library</h1>
+<ol>
+	<li>Use Finder to locate the <code>code/staged/objectiveresource</code> directory</li>
+	<li>Drag and drop it on the <em>Classes</em> group in the <em>Groups &amp; Files</em> menu of your Xcode project
+	<ul>
+		<li>Make sure to select the <em>Copy items into destination group&#8217;s folder</em> option</li>
+	</ul></li>
+	<li>Delete the <code>json-framework</code> directory</li>
+	<li>Build as a sanity check</li>
+</ol>
+</div>
+<div class="slide"><h1 class="exercise">3. Clean House</h1>
+<ul>
+	<li>Import ObjectiveResource in <code>Goal.h</code>:</li>
+</ul>
+<div class="code-normal">
+<pre name="code" class="brush: objc">#import "ObjectiveResource.h"</pre></div>
+<ul>
+	<li>Remove all the custom <span class="caps">CRUD</span> methods in <code>Goal</code></li>
+</ul>
+<ul>
+	<li>Delete the <code>Resource</code> class</li>
+</ul>
+</div>
+<div class="slide"><h1 class="exercise">4. Configure ObjectiveResource</h1>
+<p class="first">In <code>SaveUpAppDelegate.m</code>, add an import:</p>
+<div class="code-normal">
+<pre name="code" class="brush: objc">#import "ObjectiveResourceConfig.h"</pre></div>
+<p>And configure ObjectiveResource in <code>application:didFinishLaunchingWithOptions:</code>:</p>
+<div class="code-normal">
+<pre name="code" class="brush: objc">[ObjectiveResourceConfig setSite:@"http://localhost:3000/"];
+[ObjectiveResourceConfig setResponseType:JSONResponse];</pre></div>
+</div>
+<div class="slide"><h1 class="exercise">5. Tweak Rails</h1>
+<p class="first">Add an initializer that includes:</p>
+<div class="code-normal">
+<pre name="code" class="brush: ruby">ActiveRecord::Base.include_root_in_json = true</pre></div>
+<div class="hint">
+<p>ObjectiveResource expects <span class="caps">JSON</span> responses to include the resource name</p>
+</div>
+</div>
+<div class="slide"><h1 class="exercise">6. Run It!</h1>
+<ol>
+	<li>Create, edit, and delete a goal</li>
+	<li>Watch the Rails log</li>
+	<li>Is everything in sync with the Rails app?</li>
+</ol>
+<div style="margin-top: 2em;">
+<ul>
+	<li>No visible app changes</li>
+	<li>Less code to maintain</li>
+	<li>But it&#8217;s synchronous&#8230;<br />
+</div></li>
+</ul>
+<div class="hint">
+At this point, we&#8217;ve replicated the app in <code>code/6-objectiveresource</code>
+</div>
+</div>
+<div class="slide"><h1>What We Have</h1>
+<p><img src="../assets/images/table-crud-remote.png" alt="" /></p>
+</div>
+<div class="slide"><h1>Asynchronous Way</h1>
+<ul>
+	<li>1.1 branch has a <code>ConnectionManager</code> singleton</li>
+	<li>It encapsulates an operation queue</li>
+	<li>We understand how it works:</li>
+</ul>
+<div class="code-medium">
+<pre name="code" class="brush: objc">- (void)runJob:(SEL)selector 
+      onTarget:(id)target 
+  withArgument:(id)argument {
+    
+    NSInvocationOperation *operation = [[NSInvocationOperation alloc] 
+        initWithTarget:target selector:selector object:argument];
+    [operationQueue addOperation:operation];
+    [operation release];
+}</pre></div>
+</div>
+<div class="slide"><h1 class="exercise">7. Send requests in background</h1>
+<p class="first">For example, change <code>refresh</code> from:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby">- (IBAction)refresh {
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    self.goals = [Goal findAllRemote];
+    [self.tableView reloadData];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+}</pre></div>
+<p>To run a background job instead:</p>
+<div class="code-small">
+<pre name="code" class="brush: objc; highlight: [4,5]">- (IBAction)refresh {
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+
+    [[ConnectionManager sharedInstance] runJob:@selector(fetchRemoteGoals)
+                                      onTarget:self];
+}</pre></div>
+</div>
+<div class="slide"><h1 class="exercise">8. Handle response async</h1>
+<p class="first">Write the method that runs on a separate thread:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">- (void)fetchRemoteGoals {
+    self.goals = [Goal findAllRemote];
+     
+    [self.tableView performSelectorOnMainThread:@selector(reloadData)
+                                     withObject:nil
+                                  waitUntilDone:NO];
+
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+}</pre></div>
+<div class="hint">
+Remember: The UI should always be updated on the main thread.
+</div>
+</div>
+<div class="slide"><h1>But We Still Want This</h1>
+<p><img src="../assets/images/nested-resources.png" alt="" /></p>
+</div>
+<div class="slide"><h1 class="exercise">9. Switcheroo</h1>
+<ol>
+	<li>Switch to the final Rails app in the <code>code/rails_app</code> directory
+	<ul>
+		<li>This version has <code>Goal</code> and <code>Credit</code> resources (nested)</li>
+	</ul></li>
+	<li>Migrate the database and run it</li>
+	<li>Create an account and log in</li>
+	<li>Switch to the final iPhone app in the <code>code/iphone_app</code> directory
+	<ul>
+		<li>This version supports nested resources, asynchronous networking, and authentication</li>
+	</ul></li>
+	<li>Run it!</li>
+</ol>
+</div>
+<div class="slide"><h1>Nested Resource Routes</h1>
+<p class="first">The Rails app has a nested <code>Credit</code> resource:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby">Saveup::Application.routes.draw do |map|
+  
+  resources :goals do
+    resources :credits
+  end
+
+end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/rails_app/config/routes.rb">../code/rails_app/config/routes.rb</a></div></p>
+</div>
+<div class="slide"><h1>Credits Controller</h1>
+<p class="first">Credits are always accessed via a goal:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: [6,18]">class CreditsController &lt; ApplicationController
+
+  before_filter :find_goal
+
+  def show
+    @credit = @goal.credits.find(params[:id])
+
+    respond_to do |format|
+      format.html
+      format.xml  { render :xml  =&gt; @credit }
+      format.json { render :json =&gt; @credit }
+    end
+  end
+  
+protected
+
+  def find_goal
+    @goal = current_user.goals.find(params[:goal_id])
+  rescue ActiveRecord::RecordNotFound
+    flash[:error] = "Invalid goal."
+    redirect_to @goal
+  end
+  
+end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/rails_app/app/controllers/credits_controller.rb">../code/rails_app/app/controllers/credits_controller.rb</a></div></p>
+</div>
+<div class="slide"><h1>iPhone Credit Model (.h)</h1>
+<p class="first"><code>Credit</code> holds its respective <code>Goal</code> id:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: [5,13]">#import "ObjectiveResource.h"
+
+@interface Credit : NSObject {
+    NSString *creditId;
+    NSString *goalId;
+    NSString *name;
+    NSString *amount;
+    NSDate   *updatedAt;
+    NSDate   *createdAt;
+}
+
+@property (nonatomic, copy) NSString *creditId;
+@property (nonatomic, copy) NSString *goalId;
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *amount;
+@property (nonatomic, retain) NSDate *updatedAt;
+@property (nonatomic, retain) NSDate *createdAt;
+
+@end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/iphone_app/Classes/Credit.h">../code/iphone_app/Classes/Credit.h</a></div></p>
+</div>
+<div class="slide"><h1>iPhone Credit Model (.h)</h1>
+<p class="first"><code>Credit</code> must override some methods to be nested:</p>
+<div class="code-tiny">
+<pre name="code" class="brush: ruby">@implementation Credit
+
+@synthesize creditId;
+@synthesize goalId;
+
++ (NSString *)getRemoteCollectionName {
+	return @"goals";
+}
+
+- (NSString *)nestedPath {
+	NSString *path = [NSString stringWithFormat:@"%@/credits", goalId];
+	if (creditId) {
+		path = [path stringByAppendingFormat:@"/%@", creditId];
+	}
+	return path;
+}
+
+- (BOOL)createRemoteWithResponse:(NSError **)aError {
+    return [self createRemoteAtPath:[[self class] getRemoteElementPath:[self nestedPath]] 
+                       withResponse:aError];
+}
+
+- (BOOL)updateRemoteWithResponse:(NSError **)aError {
+    return [self updateRemoteAtPath:[[self class] getRemoteElementPath:[self nestedPath]] 
+                       withResponse:aError];
+}
+
+- (BOOL)destroyRemoteWithResponse:(NSError **)aError {
+    return [self destroyRemoteAtPath:[[self class] getRemoteElementPath:[self nestedPath]] 
+                        withResponse:aError];
+}
+
+@end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/iphone_app/Classes/Credit.m">../code/iphone_app/Classes/Credit.m</a></div></p>
+</div>
+<div class="slide"><h1>Associating Goals and Credits</h1>
+<p class="first">On the iPhone side, <code>Goal</code> can find its remote credits:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby">@implementation Goal
+
+- (NSArray *)findAllRemoteCredits {
+	return [Credit findRemote:[NSString stringWithFormat:@"%@/%@", 
+                                goalId, @"credits"]];
+}
+
+@end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/iphone_app/Classes/Goal.m">../code/iphone_app/Classes/Goal.m</a></div></p>
+</div>
+<div class="slide"><h1>What We Have</h1>
+<p><img src="../assets/images/nested-resources.png" alt="" /></p></div>
+</div>
+
+<!-- Syntax Highlighter -->
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shCore.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushRuby.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushBash.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushXml.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushObjectiveC.js"></script>
+<script language="javascript">
+  SyntaxHighlighter.defaults['gutter'] = false;
+  SyntaxHighlighter.defaults['toolbar'] = false;
+  SyntaxHighlighter.all();
+</script>
+</body>
+</html>

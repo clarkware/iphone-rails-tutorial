@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>Mobile App Development with iPhone and Rails</title>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<!-- metadata -->
+<meta name="generator" content="S5" />
+<meta name="version" content="S5 1.1" />
+<meta name="presdate" content="June 6, 2010" />
+<meta name="author" content="Mike Clark" />
+<meta name="company" content="The Pragmatic Studio" />
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow" />
+<meta name="controlVis" content="hidden" />
+<!-- style sheet links -->
+<link rel="stylesheet" href="../assets/ui/default/slides.css" type="text/css" media="projection" id="slideProj" />
+<link rel="stylesheet" href="../assets/ui/default/outline.css" type="text/css" media="screen" id="outlineStyle" />
+<link rel="stylesheet" href="../assets/stylesheets/print.css" type="text/css" media="print" id="slidePrint" />
+<link rel="stylesheet" href="../assets/ui/default/opera.css" type="text/css" media="projection" id="operaFix" />
+<!-- Syntax Highlighter -->
+<link rel="stylesheet" href="../assets/syntaxhighlighter/styles/shCore.css" type="text/css" />
+<link rel="stylesheet" href="../assets/syntaxhighlighter/styles/shThemeStudio.css" type="text/css" />
+<link rel="stylesheet" href="../assets/stylesheets/pressie.css" type="text/css" />
+
+<!-- S5 JS -->
+<script src="../assets/ui/default/slides.js" type="text/javascript"></script>
+
+</head>
+<body>
+
+<div class="layout">
+  <div id="controls"><!-- DO NOT EDIT --></div>
+  <div id="currentSlide"><!-- DO NOT EDIT --></div>
+  <div id="header"></div>
+  <div id="footer">
+    <h2>Copyright &#169; 2010 The Pragmatic Studio</h2>
+  </div>
+</div>
+
+<div class="presentation">
+  
+<div class="slide"><h1>Getting Started: Rails App</h1>
+</div>
+<div class="slide"><h1>Task: Scaffold App</h1>
+<p><img src="../assets/images/scaffold.png" alt="" /></p>
+</div>
+<div class="slide"><h1 class="exercise">1. Create the App</h1>
+<p class="first">Generate a basic scaffold app:</p>
+<div class="code-normal">
+<pre name="code" class="brush: session">$ rails saveup
+$ cd saveup
+$ rails g scaffold goal name:string amount:decimal</pre></div>
+<p>Run it:</p>
+<div class="code-normal">
+<pre name="code" class="brush: session">$ rake db:migrate
+$ rails s</pre></div>
+<p>And <a href="http://localhost:3000/goals">create a goal or two</a>&#8230;</p>
+</div>
+<div class="slide"><h1>Serialization</h1>
+<p class="first">ActiveRecord models can serialize themselves as <span class="caps">XML</span> or <span class="caps">JSON</span>:</p>
+<div class="code-normal">
+<pre name="code" class="brush: session">$ rails c
+&gt;&gt; print Goal.first.to_xml
+&gt;&gt; print Goal.first.to_json
+&gt;&gt; print Goal.all.to_xml
+&gt;&gt; print Goal.all.to_json</pre></div>
+<p>And resources can be serialized as <span class="caps">XML</span> over <span class="caps">HTTP</span>:</p>
+<div class="code-normal">
+<pre name="code" class="brush: session">$ curl http://localhost:3000/goals.xml
+$ curl http://localhost:3000/goals/1.xml</pre></div>
+</div>
+<div class="slide"><h1 class="exercise">2. Serialize resources as <span class="caps">JSON</span></h1>
+<p class="first">Add <span class="caps">JSON</span> handling to the <code>respond_to</code> blocks in the actions of the <code>GoalsController</code>:</p>
+<div class="code-normal">
+<pre name="code" class="brush: ruby; highlight: 7">def index
+  @goals = Goal.all
+
+  respond_to do |format|
+    format.html
+    format.xml  { render :xml =&gt; @goals }
+    format.json { render :json =&gt; @goals }
+  end
+end</pre></div>
+<p>Copy in <code>code/staged/goals_controller.rb</code> for full <span class="caps">JSON</span> support</p>
+</div>
+<div class="slide"><h1 class="exercise">3. Try It!</h1>
+<p class="first">Request the resource with a <code>json</code> format:</p>
+<div class="code-normal">
+<pre name="code" class="brush: session">$ curl http://localhost:3000/goals.json
+$ curl http://localhost:3000/goals/1.json</pre></div>
+<p>Response should be a <span class="caps">JSON</span> record, or an array of records:</p>
+<div class="code-normal">
+<pre name="code" class="brush: ruby">{
+  "id":1,
+  "name":"Tropical Vacation",
+  "amount":2000.0,
+  "created_at":"2010-05-13T18:20:49Z",
+  "updated_at":"2010-05-13T18:38:55Z"
+}</pre></div></div>
+</div>
+
+<!-- Syntax Highlighter -->
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shCore.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushRuby.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushBash.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushXml.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushObjectiveC.js"></script>
+<script language="javascript">
+  SyntaxHighlighter.defaults['gutter'] = false;
+  SyntaxHighlighter.defaults['toolbar'] = false;
+  SyntaxHighlighter.all();
+</script>
+</body>
+</html>

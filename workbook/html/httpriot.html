@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>Mobile App Development with iPhone and Rails</title>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<!-- metadata -->
+<meta name="generator" content="S5" />
+<meta name="version" content="S5 1.1" />
+<meta name="presdate" content="June 6, 2010" />
+<meta name="author" content="Mike Clark" />
+<meta name="company" content="The Pragmatic Studio" />
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow" />
+<meta name="controlVis" content="hidden" />
+<!-- style sheet links -->
+<link rel="stylesheet" href="../assets/ui/default/slides.css" type="text/css" media="projection" id="slideProj" />
+<link rel="stylesheet" href="../assets/ui/default/outline.css" type="text/css" media="screen" id="outlineStyle" />
+<link rel="stylesheet" href="../assets/stylesheets/print.css" type="text/css" media="print" id="slidePrint" />
+<link rel="stylesheet" href="../assets/ui/default/opera.css" type="text/css" media="projection" id="operaFix" />
+<!-- Syntax Highlighter -->
+<link rel="stylesheet" href="../assets/syntaxhighlighter/styles/shCore.css" type="text/css" />
+<link rel="stylesheet" href="../assets/syntaxhighlighter/styles/shThemeStudio.css" type="text/css" />
+<link rel="stylesheet" href="../assets/stylesheets/pressie.css" type="text/css" />
+
+<!-- S5 JS -->
+<script src="../assets/ui/default/slides.js" type="text/javascript"></script>
+
+</head>
+<body>
+
+<div class="layout">
+  <div id="controls"><!-- DO NOT EDIT --></div>
+  <div id="currentSlide"><!-- DO NOT EDIT --></div>
+  <div id="header"></div>
+  <div id="footer">
+    <h2>Copyright &#169; 2010 The Pragmatic Studio</h2>
+  </div>
+</div>
+
+<div class="presentation">
+  
+<div class="slide"><h1>Off-The-Shelf <span class="caps">REST</span> Library</h1>
+</div>
+<div class="slide"><h1>Task: <span class="caps">CRUD</span> a Remote Resource</h1>
+<p class="first">Same UI, but with</p>
+<ul>
+	<li>Full <span class="caps">REST</span> support</li>
+	<li>Asynchronous networking</li>
+	<li>Better error handling</li>
+	<li>Basic authentication</li>
+</ul>
+</div>
+<div class="slide"><h1>Task: <span class="caps">CRUD</span> a Remote Resource</h1>
+<p><img src="../assets/images/table-crud-remote-async.png" alt="" /></p>
+</div>
+<div class="slide"><h1>HTTPRiot</h1>
+<ul>
+	<li><a href="http://github.com/caged/httpriot">HTTPRiot</a> is a simple <span class="caps">REST</span> library that makes it easy to interact with RESTful resources (inspired by <a href="http://github.com/jnunemaker/httparty">httparty</a>)</li>
+	<li>Asynchronous networking using operation queues and delegate methods</li>
+	<li>Responses are automatically converted to NSDictionary or NSArray objects</li>
+	<li>You decide what to do with the results&#8230;</li>
+</ul>
+</div>
+<div class="slide"><h1>HTTPRiot Configuration</h1>
+<p class="first">Base <span class="caps">URL</span> where your resources live:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">[HRRestModel setBaseURL:[NSURL URLWithString:@"http://your-server"]];</pre></div>
+<p>Delegate object that handles responses:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">[HRRestModel setDelegate:anObject]; </pre></div>
+<p>Optional bits:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">[HRRestModel setFormat:HRDataFormatXML];  // JSON by default
+
+[HRRestModel setBasicAuthWithUsername:@"mike" password:@"secret"];</pre></div>
+</div>
+<div class="slide"><h1>Sending <span class="caps">REST</span> Requests</h1>
+<div class="code-medium">
+<pre name="code" class="brush: objc">[HRRestModel getPath:@"/goals" withOptions:nil object:nil]; </pre></div>
+<div class="code-medium">
+<pre name="code" class="brush: objc">NSDictionary *params = [NSDictionary dictionaryWithObject:
+    [newGoal JSONRepresentation] forKey:@"body"]; 
+
+[HRRestModel postPath:@"/goals" withOptions:params object:nil]; </pre></div>
+<div class="code-medium">
+<pre name="code" class="brush: objc">NSDictionary *params = [NSDictionary dictionaryWithObject:
+    [updatedGoal JSONRepresentation] forKey:@"body"]; 
+
+[HRRestModel putPath:@"/goals/3" withOptions:params object:nil]; </pre></div>
+<div class="code-medium">
+<pre name="code" class="brush: objc">[HRRestModel deletePath:@"/goals/3" withOptions:nil object:nil];</pre></div>
+</div>
+<div class="slide"><h1>Delegate Methods: Success</h1>
+<p class="first">Results delivered in a callback method implemented by the delegate:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">- (void)restConnection:(NSURLConnection *)connection          
+    didReturnResource:(id)resource                   
+               object:(id)object {  
+    // resource is an array or dictionary        
+    for (id item in resource) {         
+      Goal *goal = [[Goal alloc] initWithDictionary:item];         
+    }
+}
+
+- (void)restConnection:(NSURLConnection *)connection 
+    didReceiveResponse:(NSHTTPURLResponse *)response 
+                object:(id)object {
+    // If you're interested in handling response codes
+}</pre></div>
+<div class="hint">
+You should read the source. It&#8217;s good, and at this point you&#8217;ll understand how it works.
+</div>
+</div>
+<div class="slide"><h1>Delegate Methods: Failure</h1>
+<p class="first">Delegate object should implement these methods, too:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">- (void)restConnection:(NSURLConnection *)connection        
+      didFailWithError:(NSError *)error                  
+                object:(id)object {     
+    // Handle connection errors: failure to connect to server, etc.
+}  
+
+- (void)restConnection:(NSURLConnection *)connection         
+       didReceiveError:(NSError *)error                    
+              response:(NSHTTPURLResponse *)response                  
+                object:(id)object {     
+    // Handle invalid responses: 404, 500, etc. 
+}  
+
+- (void)restConnection:(NSURLConnection *)connection    
+  didReceiveParseError:(NSError *)error            
+          responseBody:(NSString *)string {     
+    // Request was successful, but couldn't parse the 
+    // data returned by the server 
+} </pre></div>
+</div>
+<div class="slide"><h1 class="exercise">1. Level Up!</h1>
+<ol>
+	<li>Switch to the iPhone app in the <code>code/5-httpriot</code> directory</li>
+	<li>Create, edit, and delete a goal</li>
+	<li>Search for <code>HRRestModel</code> to see how it works</li>
+	<li>Better yet, let&#8217;s do some spelunking with the debugger&#8230;</li>
+</ol>
+</div>
+<div class="slide"><h1 class="exercise">2. Fetch Goals Asynchronously</h1>
+<p class="first">Set a breakpoint in the <code>refresh</code> action of <code>GoalsViewController.m</code>:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby; highlight: 4">- (IBAction)refresh {
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    [HRRestModel setDelegate:self];
+    [HRRestModel getPath:@"/goals" withOptions:nil object:nil];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/5-httpriot/Classes/GoalsViewController.m">../code/5-httpriot/Classes/GoalsViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">3. Handle the Response</h1>
+<p class="first">Set another breakpoint in the delegate method:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby; highlight: 6">- (void)restConnection:(NSURLConnection *)connection 
+     didReturnResource:(id)resource 
+                object:(id)object { 
+    NSMutableArray *remoteGoals = [[NSMutableArray alloc] init];
+    for (NSDictionary *dictionary in resource) {
+        Goal *remoteGoal = [[Goal alloc] initWithDictionary:dictionary];
+        [remoteGoals addObject:remoteGoal];
+        [remoteGoal release];
+    }
+    self.goals = remoteGoals;
+    [remoteGoals release];
+
+    [self.tableView reloadData];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/5-httpriot/Classes/GoalsViewController.m">../code/5-httpriot/Classes/GoalsViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">4. Debug</h1>
+<ul>
+	<li><em>Build and Debug</em> the app</li>
+	<li>Which thread is the <code>refresh</code> method running in?</li>
+	<li>Which thread is the <code>restConnection:didReturnResource:object:</code> method running in?</li>
+	<li>How would you verify that it&#8217;s asynchronous?</li>
+</ul>
+</div>
+<div class="slide"><h1 class="exercise">5. Save Goals Asynchronously</h1>
+<p class="first">Set a breakpoint in the <code>save</code> action of <code>GoalAddViewController.m</code>:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: [11,13,14]">-(IBAction)save {
+    goal.name = nameField.text;
+    goal.amount = amountField.text;
+    
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    
+    NSDictionary *options = 
+        [NSDictionary dictionaryWithObject:[goal JSONRepresentation] forKey:@"body"];
+    
+    if (goal.goalId == nil) {
+        [HRRestModel postPath:@"goals" withOptions:options object:nil];
+    } else {
+        [HRRestModel putPath:[NSString stringWithFormat:@"goals/%@", goal.goalId] 
+                 withOptions:options object:nil];
+    }
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/5-httpriot/Classes/GoalAddViewController.m">../code/5-httpriot/Classes/GoalAddViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">6. Handle Saving Goals</h1>
+<p class="first">Set another breakpoint in the delegate method:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: 5">- (void)restConnection:(NSURLConnection *)connection 
+     didReturnResource:(id)resource 
+                object:(id)object { 
+    
+    Goal *remoteGoal = [[Goal alloc] initWithDictionary:resource];
+    [self.delegate didChangeGoal:remoteGoal];
+    [remoteGoal release];
+    
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    [self.navigationController popViewControllerAnimated:YES];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/5-httpriot/Classes/GoalAddViewController.m">../code/5-httpriot/Classes/GoalAddViewController.m</a></div></p>
+<p>Run it, and use the debugger to fully understand how it works.</p>
+</div>
+<div class="slide"><h1>Building the HTTPRiot <span class="caps">SDK</span></h1>
+<p class="first">1. Download, build, and install it:</p>
+<div class="code-normal">
+<pre name="code" class="brush: session">$ git clone http://github.com/Caged/httpriot.git
+$ cd httpriot
+$ mkdir pkg
+$ gem install versionomy
+$ rake sdk:dist
+$ rake sdk:install</pre></div>
+</div>
+<div class="slide"><h1>Building the HTTPRiot <span class="caps">SDK</span></h1>
+<p class="first">2. Set the <em>Additional SDKs</em> build setting to:</p>
+<div class="code-small">
+<pre name="code" class="brush: session">~/Library/SDKs/httpriot-0.6.10/$(PLATFORM_NAME)$(IPHONEOS_DEPLOYMENT_TARGET).sdk</pre></div>
+<p>3. Set the <em>Other Linker Flags</em> build setting to:</p>
+<div class="code-small">
+<pre name="code" class="brush: session">-lhttpriot -lxml2 -ObjC -all_load</pre></div>
+<p>4. Set the <em>Header Search Paths</em> build setting to:</p>
+<div class="code-small">
+<pre name="code" class="brush: session">/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS3.2.sdk/usr/include/libxml2</pre></div>
+</div>
+<div class="slide"><h1>ASIHTTPRequest</h1>
+<ul>
+	<li><a href="http://allseeing-i.com/ASIHTTPRequest/">ASIHTTPRequest</a> is a flexible, low-level library with tons of features</li>
+	<li>File uploads, post form-encoded data, basic authentication, progress indictors, etc.</li>
+	<li>Synchronous and asynchronous requests</li>
+	<li>Not necessarily a <span class="caps">REST</span> library</li>
+	<li>Doesn&#8217;t automatically convert <span class="caps">JSON</span> and <span class="caps">XML</span></li>
+	<li>Highly recommended, though</li>
+</ul>
+</div>
+<div class="slide"><h1>ASIHTTPRequest Example</h1>
+<div class="code-small">
+<pre name="code" class="brush: objc">- (void)get {    
+    NSURL *url = [NSURL URLWithString:@"http://your-server.com/goals.json"];    
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];    
+    [request setDelegate:self];    
+    [request startAsynchronous];  
+}   
+
+- (void)post:(NSString *postDataString) {
+  NSURL *url = [NSURL URLWithString:@"http://your-server.com/goals.json"];
+  ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+  [request setRequestMethod:@"POST"];
+  [request appendPostData:[postDataString dataUsingEncoding:NSUTF8StringEncoding]];
+  [request setDelegate:self];    
+  [request startAsynchronous];
+}
+
+- (void)requestFinished:(ASIHTTPRequest *)request {    
+    NSString *response = [request responseString]; 
+}   
+
+- (void)requestFailed:(ASIHTTPRequest *)request {
+    NSError *error = [request error]; 
+}</pre></div></div>
+</div>
+
+<!-- Syntax Highlighter -->
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shCore.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushRuby.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushBash.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushXml.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushObjectiveC.js"></script>
+<script language="javascript">
+  SyntaxHighlighter.defaults['gutter'] = false;
+  SyntaxHighlighter.defaults['toolbar'] = false;
+  SyntaxHighlighter.all();
+</script>
+</body>
+</html>

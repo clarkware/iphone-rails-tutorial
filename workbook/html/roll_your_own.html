@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>Mobile App Development with iPhone and Rails</title>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<!-- metadata -->
+<meta name="generator" content="S5" />
+<meta name="version" content="S5 1.1" />
+<meta name="presdate" content="June 6, 2010" />
+<meta name="author" content="Mike Clark" />
+<meta name="company" content="The Pragmatic Studio" />
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow" />
+<meta name="controlVis" content="hidden" />
+<!-- style sheet links -->
+<link rel="stylesheet" href="../assets/ui/default/slides.css" type="text/css" media="projection" id="slideProj" />
+<link rel="stylesheet" href="../assets/ui/default/outline.css" type="text/css" media="screen" id="outlineStyle" />
+<link rel="stylesheet" href="../assets/stylesheets/print.css" type="text/css" media="print" id="slidePrint" />
+<link rel="stylesheet" href="../assets/ui/default/opera.css" type="text/css" media="projection" id="operaFix" />
+<!-- Syntax Highlighter -->
+<link rel="stylesheet" href="../assets/syntaxhighlighter/styles/shCore.css" type="text/css" />
+<link rel="stylesheet" href="../assets/syntaxhighlighter/styles/shThemeStudio.css" type="text/css" />
+<link rel="stylesheet" href="../assets/stylesheets/pressie.css" type="text/css" />
+
+<!-- S5 JS -->
+<script src="../assets/ui/default/slides.js" type="text/javascript"></script>
+
+</head>
+<body>
+
+<div class="layout">
+  <div id="controls"><!-- DO NOT EDIT --></div>
+  <div id="currentSlide"><!-- DO NOT EDIT --></div>
+  <div id="header"></div>
+  <div id="footer">
+    <h2>Copyright &#169; 2010 The Pragmatic Studio</h2>
+  </div>
+</div>
+
+<div class="presentation">
+  
+<div class="slide"><h1>Roll Your Own <span class="caps">REST</span> Library</h1>
+</div>
+<div class="slide"><h1>Task: <span class="caps">CRUD</span> a Resource</h1>
+<p><img src="../assets/images/table-crud-remote.png" alt="" /></p>
+</div>
+<div class="slide"><h1 class="exercise">1. Level Up!</h1>
+<ol>
+	<li>Switch to the iPhone app in the <code>code/3-scaffold</code> directory</li>
+	<li>Run it!
+	<ul>
+		<li>It supports adding new goals locally and updating local goals</li>
+		<li>But it doesn&#8217;t support creating, updating, and deleting remote goals</li>
+	</ul></li>
+	<li>Search for <span class="caps">TODO</span> to see why</li>
+</ol>
+</div>
+<div class="slide"><h1>Steps</h1>
+<ol>
+	<li>Write a custom <span class="caps">REST</span> library</li>
+	<li>Change <code>Goal</code> to include <span class="caps">CRUD</span> methods that delegate to the library</li>
+	<li>Update <code>GoalsViewController</code> to delete a remote goal</li>
+	<li>Update <code>GoalAddViewController</code> to create or update a remote goal</li>
+</ol>
+</div>
+<div class="slide"><h1>Synchronous Networking Basics</h1>
+<p class="first">1. Create a request from a <span class="caps">URL</span>:</p>
+<div class="code-small">
+<pre name="code" class="brush: objc">NSURL *url = [NSURL URLWithString:@"http://localhost:3000/goals.json"];
+NSURLRequest *request = [NSURLRequest requestWithURL:url];
+[request setHTTPMethod:@"GET"];</pre></div>
+<p>2. Send the request synchronously:</p>
+<div class="code-small">
+<pre name="code" class="brush: objc">NSURLResponse *response = nil;
+NSError *error = nil;
+
+NSData *responseData = 
+    [NSURLConnection sendSynchronousRequest:request returningResponse:&amp;response error:&amp;error];</pre></div>
+<p>3. Handle the returned data:</p>
+<div class="code-small">
+<pre name="code" class="brush: objc">NSString *responseString = 
+     [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];   </pre></div>
+</div>
+<div class="slide"><h1>Custom Resource Library</h1>
+<p class="first">To support <span class="caps">CRUD</span>, we need four standard verbs:</p>
+<div class="code-normal">
+<pre name="code" class="brush: ruby">#import &lt;Foundation/Foundation.h&gt;
+
+@interface Resource : NSObject {
+}
+
++ (NSString *)get:(NSString *)url;
++ (NSString *)post:(NSString *)body to:(NSString *)url;
++ (NSString *)put:(NSString *)body to:(NSString *)url;
++ (NSString *)delete:(NSString *)url;
+
+@end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/3-scaffold/Classes/Resource.h">../code/3-scaffold/Classes/Resource.h</a></div></p>
+</div>
+<div class="slide"><h1><span class="caps">REST</span> Verbs</h1>
+<p class="first">Implementation can be generalized:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby">+ (NSString *)get:(NSString *)url {
+    return [self sendBy:@"GET" to:url withBody:nil];
+}
+
++ (NSString *)post:(NSString *)body to:(NSString *)url {
+	return [self sendBy:@"POST" to:url withBody:body];
+}
+
++ (NSString *)put:(NSString *)body to:(NSString *)url {
+	return [self sendBy:@"PUT" to:url withBody:body];
+}
+
++ (NSString *)delete:(NSString *)url {
+    return [self sendBy:@"DELETE" to:url withBody:nil];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/3-scaffold/Classes/Resource.m">../code/3-scaffold/Classes/Resource.m</a></div></p>
+</div>
+<div class="slide"><h1>Synchronous Networking Revisted</h1>
+<div class="code-small">
+<pre name="code" class="brush: ruby">+ (NSString *)sendBy:(NSString *)method to:(NSString *)url withBody:(NSString *)body {
+	NSMutableURLRequest *request = 
+        [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
+    [request setHTTPMethod:method];
+    if (body) {
+        [request setHTTPBody:[body dataUsingEncoding:NSUTF8StringEncoding]];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    }
+    return [self sendRequest:request];
+}
+
++ (NSString *)sendRequest:(NSMutableURLRequest *)request {
+    NSHTTPURLResponse *response;
+    NSError *error;
+    
+    NSData *responseData = 
+        [NSURLConnection sendSynchronousRequest:request                         
+                              returningResponse:&amp;response 
+                                          error:&amp;error];
+    
+    NSString *responseString = 
+        [[NSString alloc] initWithData:responseData 
+                              encoding:NSUTF8StringEncoding];
+    [responseString autorelease];
+    
+    return responseString;
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/3-scaffold/Classes/Resource.m">../code/3-scaffold/Classes/Resource.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">2. Change Goal (.h)</h1>
+<p class="first">Define new <span class="caps">CRUD</span> methods:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: [17,18,19,20,21]">@interface Goal : NSObject {
+    NSString *name;
+    NSString *amount;
+    NSString *goalId;
+    NSDate *createdAt;
+    NSDate *updatedAt;
+}
+
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *amount;
+@property (nonatomic, copy) NSString *goalId;
+@property (nonatomic, retain) NSDate *createdAt;
+@property (nonatomic, retain) NSDate *updatedAt;
+
+- (id)initWithDictionary:(NSDictionary *)dictionary;
+
++ (NSArray *)findAllRemote;
+- (void)createRemote;
+- (void)updateRemote;
+- (void)saveRemote;
+- (void)destroyRemote;
+
+@end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/4-crud/Classes/Goal.h">../code/4-crud/Classes/Goal.h</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">3. Change Goal (.m)</h1>
+<p class="first">Implement <span class="caps">CRUD</span> methods to delegate to our custom <code>Resource</code> class:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby">- (void)createRemote {
+    NSString *url = 
+        [NSString stringWithFormat:@"%@/goals.json", siteURL];
+    [Resource post:[self params] to:url];
+}
+
+- (void)updateRemote {
+    NSString *url = 
+        [NSString stringWithFormat:@"%@/goals/%@.json", siteURL, self.goalId];
+    [Resource put:[self params] to:url];
+}
+
+- (void)saveRemote {
+	if (self.goalId == nil) {
+		[self createRemote];
+	} else {
+		[self updateRemote];
+	}
+}
+
+- (void)destroyRemote {
+    NSString *url = 
+        [NSString stringWithFormat:@"%@/goals/%@.json", siteURL, self.goalId];
+    [Resource delete:url];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/4-crud/Classes/Goal.m">../code/4-crud/Classes/Goal.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">4. Find the TODOs</h1>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: 7">- (void)tableView:(UITableView *)tableView 
+commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
+ forRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView beginUpdates]; 
+    if (editingStyle == UITableViewCellEditingStyleDelete) { 
+        Goal *goal = [goals objectAtIndex:indexPath.row];
+        // TODO: destroy remote goal
+        [goals removeObjectAtIndex:indexPath.row];
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
+                         withRowAnimation:UITableViewRowAnimationFade]; 
+    }
+    [tableView endUpdates]; 
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/3-scaffold/Classes/GoalsViewController.m">../code/3-scaffold/Classes/GoalsViewController.m</a></div></p>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: 4">-(IBAction)save {
+    goal.name = nameField.text;
+    goal.amount = amountField.text;
+    // TODO: create or update remote goal
+    [self.delegate didChangeGoal:goal];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/3-scaffold/Classes/GoalAddViewController.m">../code/3-scaffold/Classes/GoalAddViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">5. Fix the TODOs</h1>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: 7">- (void)tableView:(UITableView *)tableView 
+commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
+ forRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView beginUpdates]; 
+    if (editingStyle == UITableViewCellEditingStyleDelete) { 
+        Goal *goal = [goals objectAtIndex:indexPath.row];
+        [goal destroyRemote];
+        [goals removeObjectAtIndex:indexPath.row];
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
+                         withRowAnimation:UITableViewRowAnimationFade]; 
+    }
+    [tableView endUpdates]; 
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/4-crud/Classes/GoalsViewController.m">../code/4-crud/Classes/GoalsViewController.m</a></div></p>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: 4">-(IBAction)save {
+    goal.name = nameField.text;
+    goal.amount = amountField.text;
+    [goal saveRemote];
+    [self.delegate didChangeGoal:goal];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/4-crud/Classes/GoalAddViewController.m">../code/4-crud/Classes/GoalAddViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">6. Run It</h1>
+<ol>
+	<li>Open the Xcode console (<code>⇧ ⌘ R</code>)</li>
+	<li>Create a goal</li>
+	<li>Edit a goal</li>
+	<li>Delete a goal</li>
+	<li>See <span class="caps">GET</span>, <span class="caps">POST</span>, <span class="caps">PUT</span>, and <span class="caps">DELETE</span> requests in the console?</li>
+	<li>Is everything in sync with the Rails app?</li>
+</ol>
+<div class="hint">
+At this point, we&#8217;ve replicated the app in <code>code/4-crud</code>
+</div>
+</div>
+<div class="slide"><h1>Are We Done?!</h1>
+<ul>
+	<li>We have full <span class="caps">REST</span> interaction, but&#8230;</li>
+	<li>No error handling</li>
+	<li>No authentication support</li>
+	<li>Every request is synchronous</li>
+	<li>Answer: No!</li>
+</ul></div>
+</div>
+
+<!-- Syntax Highlighter -->
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shCore.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushRuby.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushBash.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushXml.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushObjectiveC.js"></script>
+<script language="javascript">
+  SyntaxHighlighter.defaults['gutter'] = false;
+  SyntaxHighlighter.defaults['toolbar'] = false;
+  SyntaxHighlighter.all();
+</script>
+</body>
+</html>

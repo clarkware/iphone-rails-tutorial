@@ -1,0 +1,271 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>Mobile App Development with iPhone and Rails</title>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<!-- metadata -->
+<meta name="generator" content="S5" />
+<meta name="version" content="S5 1.1" />
+<meta name="presdate" content="June 6, 2010" />
+<meta name="author" content="Mike Clark" />
+<meta name="company" content="The Pragmatic Studio" />
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow" />
+<meta name="controlVis" content="hidden" />
+<!-- style sheet links -->
+<link rel="stylesheet" href="../assets/ui/default/slides.css" type="text/css" media="projection" id="slideProj" />
+<link rel="stylesheet" href="../assets/ui/default/outline.css" type="text/css" media="screen" id="outlineStyle" />
+<link rel="stylesheet" href="../assets/stylesheets/print.css" type="text/css" media="print" id="slidePrint" />
+<link rel="stylesheet" href="../assets/ui/default/opera.css" type="text/css" media="projection" id="operaFix" />
+<!-- Syntax Highlighter -->
+<link rel="stylesheet" href="../assets/syntaxhighlighter/styles/shCore.css" type="text/css" />
+<link rel="stylesheet" href="../assets/syntaxhighlighter/styles/shThemeStudio.css" type="text/css" />
+<link rel="stylesheet" href="../assets/stylesheets/pressie.css" type="text/css" />
+
+<!-- S5 JS -->
+<script src="../assets/ui/default/slides.js" type="text/javascript"></script>
+
+</head>
+<body>
+
+<div class="layout">
+  <div id="controls"><!-- DO NOT EDIT --></div>
+  <div id="currentSlide"><!-- DO NOT EDIT --></div>
+  <div id="header"></div>
+  <div id="footer">
+    <h2>Copyright &#169; 2010 The Pragmatic Studio</h2>
+  </div>
+</div>
+
+<div class="presentation">
+  
+<div class="slide"><h1>Fetching Remote Goals</h1>
+</div>
+<div class="slide"><h1>Task: Populate Table from <span class="caps">API</span></h1>
+<p><img src="../assets/images/fetching-goals.png" alt="" /></p>
+</div>
+<div class="slide"><h1>Steps</h1>
+<ol>
+	<li>Request the goals from the <span class="caps">API</span> as <span class="caps">JSON</span></li>
+	<li>Deserialize them into <code>Goal</code> objects</li>
+	<li>Refresh the table view</li>
+	<li>Configure the table view cells</li>
+</ol>
+</div>
+<div class="slide"><h1>Simple <span class="caps">GET</span> request</h1>
+<div class="code-medium">
+<pre name="code" class="brush: ruby">    NSURL *url = [NSURL URLWithString:@"http://localhost:3000/goals.json"];
+    
+    NSError *error = nil;
+    
+    NSString *jsonString = 
+        [NSString stringWithContentsOfURL:url 
+                                 encoding:NSUTF8StringEncoding 
+                                    error:&amp;error];
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/2-json/Classes/Goal.m">../code/2-json/Classes/Goal.m</a></div></p>
+<p><em>Synchronously</em> reads data from the <span class="caps">URL</span> and creates a string, interpreted using the encoding.</p>
+</div>
+<div class="slide"><h1>Parsing <span class="caps">JSON</span></h1>
+<ul>
+	<li><a href="http://code.google.com/p/json-framework/">json-framework</a> is a strict <span class="caps">JSON</span> parser and generator</li>
+</ul>
+<ul>
+	<li>Drop-dead simple to use:</li>
+</ul>
+<div class="code-medium">
+<pre name="code" class="brush: objc">#import "SBJSON.h"
+
+NSError *error = nil;
+
+SBJSON *json = [[SBJSON alloc] init];
+NSArray *results = [json objectWithString:aJsonString error:&amp;error];
+[json release];</pre></div>
+<ul>
+	<li>Returns an <code>NSDictionary</code> if the <span class="caps">JSON</span> string has one record</li>
+	<li>Returns an <code>NSArray</code> of <code>NSDictionary</code> objects if the <span class="caps">JSON</span> string has multiple records</li>
+</ul>
+</div>
+<div class="slide"><h1 class="exercise">1. Add the json-framework library</h1>
+<ol>
+	<li>Use Finder to locate the <code>code/staged/json-framework</code> directory</li>
+	<li>Drag and drop it on the <em>Classes</em> group in the <em>Groups &amp; Files</em> menu of your Xcode project
+	<ul>
+		<li>Make sure to select the <em>Copy items into destination group&#8217;s folder</em> option</li>
+	</ul></li>
+</ol>
+</div>
+<div class="slide"><h1 class="exercise">2. Create a Goal Class (.h)</h1>
+<p class="first"><code>Goal</code> is a client-side representation of the <code>Goal</code> resource on the server:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby">@interface Goal : NSObject {
+    NSString *name;
+    NSString *amount;
+    NSString *goalId;
+    NSDate *createdAt;
+    NSDate *updatedAt;
+}
+
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *amount;
+@property (nonatomic, copy) NSString *goalId;
+@property (nonatomic, retain) NSDate *createdAt;
+@property (nonatomic, retain) NSDate *updatedAt;
+
+- (id)initWithDictionary:(NSDictionary *)dictionary;
+
++ (NSArray *)findAllRemote;
+
+@end
+
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/2-json/Classes/Goal.h">../code/2-json/Classes/Goal.h</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">2. Create a Goal Class (.m)</h1>
+<p class="first">Don&#8217;t forget to synthesize and dealloc the properties:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby">#import "Goal.h"
+#import "SBJSON.h"
+
+@implementation Goal
+
+@synthesize name;
+@synthesize amount;
+@synthesize goalId;
+@synthesize createdAt;
+@synthesize updatedAt;
+
+- (void)dealloc {
+    [name release];
+    [amount release];
+    [goalId release];
+    [createdAt release];
+    [updatedAt release];
+	[super dealloc];
+}
+
+@end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/2-json/Classes/Goal.m">../code/2-json/Classes/Goal.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">3. Add a Goal Custom Initializer</h1>
+<p class="first">We need to be able to create a <code>Goal</code> from a dictionary:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby">- (id)initWithDictionary:(NSDictionary *)dictionary {
+    if (self = [super init]) {
+        self.name      = [dictionary valueForKey:@"name"];
+        self.amount    = [NSString stringWithFormat:@"%@", 
+                             [dictionary valueForKey:@"amount"]];
+        self.goalId    = [dictionary valueForKey:@"id"];
+        self.createdAt = [dictionary valueForKey:@"created_at"];
+        self.updatedAt = [dictionary valueForKey:@"updated_at"];
+    }
+    return self;
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/2-json/Classes/Goal.m">../code/2-json/Classes/Goal.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">3. Add a Goal Finder Method</h1>
+<p class="first">Send a <span class="caps">GET</span> request, parse the <span class="caps">JSON</span> response, and create <code>Goal</code> objects:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby">+ (NSArray *)findAllRemote {
+    NSURL *url = [NSURL URLWithString:@"http://localhost:3000/goals.json"];
+    
+    NSError *error = nil;
+    
+    NSString *jsonString = 
+        [NSString stringWithContentsOfURL:url 
+                                 encoding:NSUTF8StringEncoding 
+                                    error:&amp;error];
+    
+    NSMutableArray *goals = [NSMutableArray array];
+    if (jsonString) {
+        SBJSON *json = [[SBJSON alloc] init];    
+        NSArray *results = [json objectWithString:jsonString error:&amp;error];
+        [json release];
+        
+        for (NSDictionary *dictionary in results) {
+            Goal *goal = [[Goal alloc] initWithDictionary:dictionary];
+            [goals addObject:goal];
+            [goal release];
+        }
+    }
+    return goals;    
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/2-json/Classes/Goal.m">../code/2-json/Classes/Goal.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">4. Refresh the Table View</h1>
+<p class="first">Add a <code>refresh</code> action that fetches the goals and reloads the table:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: 3">- (IBAction)refresh {
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    self.goals = [Goal findAllRemote];
+    [self.tableView reloadData];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/2-json/Classes/GoalsViewController.m">../code/2-json/Classes/GoalsViewController.m</a></div></p>
+<p class="first">Call <code>refresh</code> when the view is loaded:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: 7">- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.title = @"Goals";
+    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+ 
+    [self refresh];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/2-json/Classes/GoalsViewController.m">../code/2-json/Classes/GoalsViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">5. Configure the Table Cells</h1>
+<p class="first">Change each row to contain the respective goal&#8217;s name and amount:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby; highlight: [13,14,15,16]">    Goal *goal = [goals objectAtIndex:indexPath.row];
+    
+    cell.textLabel.text = goal.name;
+    cell.detailTextLabel.text = goal.amount;
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/2-json/Classes/GoalsViewController.m">../code/2-json/Classes/GoalsViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">6. Add a Refresh Button</h1>
+<p class="first">The refresh button messages our <code>refresh</code> action:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby; highlight: [7,8,9,10,11,12]">- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.title = @"Goals";
+    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    
+    UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc] 
+        initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+                             target:self 
+                             action:@selector(refresh)];
+    self.navigationItem.rightBarButtonItem = refreshButton;
+    [refreshButton release];
+ 
+    [self refresh];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/2-json/Classes/GoalsViewController.m">../code/2-json/Classes/GoalsViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">7. Run It!</h1>
+<ol>
+	<li>Add a goal (or two) in the Rails app</li>
+	<li>Hit the <em>Refresh</em> button in the iPhone app</li>
+	<li>The table view should reload with new goals</li>
+	<li>What happens when you delete a goal on the iPhone, then refresh?</li>
+</ol>
+<div class="hint">
+At this point, we&#8217;ve replicated the app in <code>code/2-json</code>
+</div></div>
+</div>
+
+<!-- Syntax Highlighter -->
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shCore.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushRuby.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushBash.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushXml.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushObjectiveC.js"></script>
+<script language="javascript">
+  SyntaxHighlighter.defaults['gutter'] = false;
+  SyntaxHighlighter.defaults['toolbar'] = false;
+  SyntaxHighlighter.all();
+</script>
+</body>
+</html>

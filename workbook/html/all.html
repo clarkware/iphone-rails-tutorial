@@ -1,0 +1,1710 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>Mobile App Development with iPhone and Rails</title>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<!-- metadata -->
+<meta name="generator" content="S5" />
+<meta name="version" content="S5 1.1" />
+<meta name="presdate" content="June 6, 2010" />
+<meta name="author" content="Mike Clark" />
+<meta name="company" content="The Pragmatic Studio" />
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow" />
+<meta name="controlVis" content="hidden" />
+<!-- style sheet links -->
+<link rel="stylesheet" href="../assets/ui/default/slides.css" type="text/css" media="projection" id="slideProj" />
+<link rel="stylesheet" href="../assets/ui/default/outline.css" type="text/css" media="screen" id="outlineStyle" />
+<link rel="stylesheet" href="../assets/stylesheets/print.css" type="text/css" media="print" id="slidePrint" />
+<link rel="stylesheet" href="../assets/ui/default/opera.css" type="text/css" media="projection" id="operaFix" />
+<!-- Syntax Highlighter -->
+<link rel="stylesheet" href="../assets/syntaxhighlighter/styles/shCore.css" type="text/css" />
+<link rel="stylesheet" href="../assets/syntaxhighlighter/styles/shThemeStudio.css" type="text/css" />
+<link rel="stylesheet" href="../assets/stylesheets/pressie.css" type="text/css" />
+
+<!-- S5 JS -->
+<script src="../assets/ui/default/slides.js" type="text/javascript"></script>
+
+</head>
+<body>
+
+<div class="layout">
+  <div id="controls"><!-- DO NOT EDIT --></div>
+  <div id="currentSlide"><!-- DO NOT EDIT --></div>
+  <div id="header"></div>
+  <div id="footer">
+    <h2>Copyright &#169; 2010 The Pragmatic Studio</h2>
+  </div>
+</div>
+
+<div class="presentation">
+  
+<div class="slide"><h1>Mobile App Development with iPhone and Rails</h1>
+<blockquote>
+<p>Mike Clark</p>
+</blockquote>
+</div>
+<div class="slide"><h1>Contents</h1>
+<div style="font-size: 70%">
+<ul>
+	<li>Welcome!</li>
+</ul>
+<ul>
+	<li>Getting Started: Rails App</li>
+</ul>
+<ul>
+	<li>Getting Started: iPhone App</li>
+</ul>
+<ul>
+	<li>Fetching Remote Goals</li>
+</ul>
+<ul>
+	<li>Roll Your Own <span class="caps">REST</span> Library</li>
+</ul>
+<ul>
+	<li>Asynchronous Networking</li>
+</ul>
+<ul>
+	<li>Off-The-Shelf <span class="caps">REST</span> Library</li>
+</ul>
+<ul>
+	<li>Nested Resources</li>
+</ul>
+<ul>
+	<li>Authentication</li>
+</ul>
+<ul>
+	<li>Caching and Syncing</li>
+</ul>
+<ul>
+	<li>What About the iPad?</li>
+</ul>
+<ul>
+	<li>Wrap Up</li>
+</ul>
+</div>
+</div>
+<div class="title slide">
+<h1>Welcome!</h1>
+</div>
+<div class="slide"><h1>Copyright and Warranty</h1>
+<p>This workbook is Copyright &copy; 2010 The Pragmatic Studio. Please don&#8217;t use it to create training courses or books without permission.<br />
+  <br />
+Sample code is provided for educational purposes only, and comes with absolutely no warranty.</p>
+</div>
+<div class="slide"><h1>What We&#8217;ll Build</h1>
+<p><img src="../assets/images/final-iphone-app.png" alt="" /></p>
+<div style="color: #B1B1B1; text-align: center; font-size: 1em;">
+connected to a <a href="http://saveup.heroku.com">Rails App</a>
+</div>
+</div>
+<div class="slide"><h1>How We&#8217;ll Build It</h1>
+<ol class="incremental">
+<li>Incrementally, with stopping off points</li>
+<li>Focusing on first principles</li>
+<li>Live coding at first, using existing code later</li>
+<li>At the end, you&#8217;ll know your options</li>
+<li>And you&#8217;ll understand how they work</li>
+</ol>
+</div>
+<div class="slide"><h1>Workbook Navigation</h1>
+<p class="first">This is <strong>your</strong> workbook&mdash;follow along now, or work through it later.</p>
+<ul>
+	<li>Next slide
+	<ul>
+		<li>space bar, enter/return, right arrow, or down arrow</li>
+	</ul></li>
+</ul>
+<ul>
+	<li>Previous slide
+	<ul>
+		<li>left arrow, up arrow</li>
+	</ul></li>
+</ul>
+<ul>
+	<li>Jump to slide number:
+	<ul>
+		<li>Type slide number, then enter/return</li>
+	</ul></li>
+</ul>
+<ul>
+	<li>Toggle between slideshow and outline view:
+	<ul>
+		<li>T</li>
+	</ul></li>
+</ul>
+<ul>
+	<li>Toggle controls:
+	<ul>
+		<li>C</li>
+	</ul></li>
+</ul>
+</div>
+<div class="title slide">
+<h1>Getting Started: Rails App</h1>
+</div>
+<div class="slide"><h1>Task: Scaffold App</h1>
+<p><img src="../assets/images/scaffold.png" alt="" /></p>
+</div>
+<div class="slide"><h1 class="exercise">1. Create the App</h1>
+<p class="first">Generate a basic scaffold app:</p>
+<div class="code-normal">
+<pre name="code" class="brush: session">$ rails saveup
+$ cd saveup
+$ rails g scaffold goal name:string amount:decimal</pre></div>
+<p>Run it:</p>
+<div class="code-normal">
+<pre name="code" class="brush: session">$ rake db:migrate
+$ rails s</pre></div>
+<p>And <a href="http://localhost:3000/goals">create a goal or two</a>&#8230;</p>
+</div>
+<div class="slide"><h1>Serialization</h1>
+<p class="first">ActiveRecord models can serialize themselves as <span class="caps">XML</span> or <span class="caps">JSON</span>:</p>
+<div class="code-normal">
+<pre name="code" class="brush: session">$ rails c
+&gt;&gt; print Goal.first.to_xml
+&gt;&gt; print Goal.first.to_json
+&gt;&gt; print Goal.all.to_xml
+&gt;&gt; print Goal.all.to_json</pre></div>
+<p>And resources can be serialized as <span class="caps">XML</span> over <span class="caps">HTTP</span>:</p>
+<div class="code-normal">
+<pre name="code" class="brush: session">$ curl http://localhost:3000/goals.xml
+$ curl http://localhost:3000/goals/1.xml</pre></div>
+</div>
+<div class="slide"><h1 class="exercise">2. Serialize resources as <span class="caps">JSON</span></h1>
+<p class="first">Add <span class="caps">JSON</span> handling to the <code>respond_to</code> blocks in the actions of the <code>GoalsController</code>:</p>
+<div class="code-normal">
+<pre name="code" class="brush: ruby; highlight: 7">def index
+  @goals = Goal.all
+
+  respond_to do |format|
+    format.html
+    format.xml  { render :xml =&gt; @goals }
+    format.json { render :json =&gt; @goals }
+  end
+end</pre></div>
+<p>Copy in <code>code/staged/goals_controller.rb</code> for full <span class="caps">JSON</span> support</p>
+</div>
+<div class="slide"><h1 class="exercise">3. Try It!</h1>
+<p class="first">Request the resource with a <code>json</code> format:</p>
+<div class="code-normal">
+<pre name="code" class="brush: session">$ curl http://localhost:3000/goals.json
+$ curl http://localhost:3000/goals/1.json</pre></div>
+<p>Response should be a <span class="caps">JSON</span> record, or an array of records:</p>
+<div class="code-normal">
+<pre name="code" class="brush: ruby">{
+  "id":1,
+  "name":"Tropical Vacation",
+  "amount":2000.0,
+  "created_at":"2010-05-13T18:20:49Z",
+  "updated_at":"2010-05-13T18:38:55Z"
+}</pre></div>
+</div>
+<div class="title slide">
+<h1>Getting Started: iPhone App</h1>
+</div>
+<div class="slide"><h1>Task: Table-Based App</h1>
+<p><img src="../assets/images/basic-table-view-delete.png" alt="" /></p>
+</div>
+<div class="slide"><h1>Steps</h1>
+<ol>
+	<li>Create an empty table-view app</li>
+	<li>Use an array as the backing store for the table</li>
+	<li>Populate the table with hard-coded goals</li>
+	<li>Handle deleting goals</li>
+</ol>
+</div>
+<div class="slide"><h1 class="exercise">1. Create the App</h1>
+<ol>
+	<li>Create a new <em>Navigation-based Application</em> (without Core Data)
+	<ul>
+		<li>name the project <em>SaveUp</em></li>
+	</ul></li>
+	<li>Set the <em>Active <span class="caps">SDK</span></em> to <em>iPhone Simulator (3.1.3)</em></li>
+	<li>Rename <code>RootViewController</code> to <code>GoalsViewController</code>
+	<ul>
+		<li>use Xcode refactoring (<code>⇧ ⌘ J</code>)</li>
+	</ul></li>
+	<li><em>Build and Run</em> the app as a sanity check
+	<ul>
+		<li>should see an empty table view</li>
+	</ul></li>
+</ol>
+</div>
+<div class="slide"><h1>Table View Data Source Methods</h1>
+<p class="first">How many sections in the table?</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView;</pre></div>
+<p>How many rows per section?</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">- (NSInteger)tableView:(UITableView *)tableView 
+ numberOfRowsInSection:(NSInteger)section;</pre></div>
+<p>What&#8217;s the table cell for a given section/row pair?</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">- (UITableViewCell *)tableView:(UITableView *)tableView 
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath;</pre></div>
+</div>
+<div class="slide"><h1 class="exercise">2. Set Up Table Data</h1>
+<p class="first">Add a <code>goals</code> instance variable and property to the <code>.h</code> file:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby">@interface GoalsViewController : UITableViewController {
+    NSMutableArray *goals;
+}
+
+@property (nonatomic, retain) NSArray *goals;
+
+@end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/1-bootstrap/Classes/GoalsViewController.h">../code/1-bootstrap/Classes/GoalsViewController.h</a></div></p>
+<p>Synthesize and dealloc it in the <code>.m</code> file:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby">@synthesize goals;
+
+- (void)dealloc {
+    [goals release];
+    [super dealloc];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/1-bootstrap/Classes/GoalsViewController.m">../code/1-bootstrap/Classes/GoalsViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">3. Hard-Code Some Goals</h1>
+<p class="first">Change the <code>viewDidLoad</code> method to initialize the <code>goals</code> array:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby; highlight: [7,8,9,10]">- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.title = @"Goals";
+    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+
+    NSMutableArray *data = [[NSMutableArray alloc] 
+        initWithObjects:@"iPad", @"Vacation", @"Donation", nil];
+    self.goals = data;
+    [data release];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/1-bootstrap/Classes/GoalsViewController.m">../code/1-bootstrap/Classes/GoalsViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">4. Populate the Table Rows</h1>
+<p class="first">Use the size of the <code>goals</code> array as the number of rows:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby">- (NSInteger)tableView:(UITableView *)tableView 
+ numberOfRowsInSection:(NSInteger)section {
+    return [goals count];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/1-bootstrap/Classes/GoalsViewController.m">../code/1-bootstrap/Classes/GoalsViewController.m</a></div></p>
+<p>Configure a row&#8217;s cell to contain the name of the goal at the given row:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby">    NSString *goal = [goals objectAtIndex:indexPath.row];
+    cell.textLabel.text = goal;
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/1-bootstrap/Classes/GoalsViewController.m">../code/1-bootstrap/Classes/GoalsViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">5. Run It!</h1>
+<p><img src="../assets/images/basic-table-view.png" alt="" /></p>
+</div>
+<div class="slide"><h1 class="exercise">6. Handle Deleting Goals</h1>
+<p class="first">Remove the deleted goal from the <code>goals</code> array:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby; highlight: 7">- (void)tableView:(UITableView *)tableView 
+commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
+ forRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView beginUpdates]; 
+    if (editingStyle == UITableViewCellEditingStyleDelete) { 
+
+        [goals removeObjectAtIndex:indexPath.row];
+
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
+                         withRowAnimation:UITableViewRowAnimationFade]; 
+    }
+    [tableView endUpdates]; 
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/1-bootstrap/Classes/GoalsViewController.m">../code/1-bootstrap/Classes/GoalsViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">7. Delete a Goal</h1>
+<p><img src="../assets/images/deleting-rows.png" alt="" /></p>
+<div class="hint">
+At this point, we&#8217;ve replicated the app in <code>code/1-bootstrap</code>
+</div>
+</div>
+<div class="title slide">
+<h1>Fetching Remote Goals</h1>
+</div>
+<div class="slide"><h1>Task: Populate Table from <span class="caps">API</span></h1>
+<p><img src="../assets/images/fetching-goals.png" alt="" /></p>
+</div>
+<div class="slide"><h1>Steps</h1>
+<ol>
+	<li>Request the goals from the <span class="caps">API</span> as <span class="caps">JSON</span></li>
+	<li>Deserialize them into <code>Goal</code> objects</li>
+	<li>Refresh the table view</li>
+	<li>Configure the table view cells</li>
+</ol>
+</div>
+<div class="slide"><h1>Simple <span class="caps">GET</span> request</h1>
+<div class="code-medium">
+<pre name="code" class="brush: ruby">    NSURL *url = [NSURL URLWithString:@"http://localhost:3000/goals.json"];
+    
+    NSError *error = nil;
+    
+    NSString *jsonString = 
+        [NSString stringWithContentsOfURL:url 
+                                 encoding:NSUTF8StringEncoding 
+                                    error:&amp;error];
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/2-json/Classes/Goal.m">../code/2-json/Classes/Goal.m</a></div></p>
+<p><em>Synchronously</em> reads data from the <span class="caps">URL</span> and creates a string, interpreted using the encoding.</p>
+</div>
+<div class="slide"><h1>Parsing <span class="caps">JSON</span></h1>
+<ul>
+	<li><a href="http://code.google.com/p/json-framework/">json-framework</a> is a strict <span class="caps">JSON</span> parser and generator</li>
+</ul>
+<ul>
+	<li>Drop-dead simple to use:</li>
+</ul>
+<div class="code-medium">
+<pre name="code" class="brush: objc">#import "SBJSON.h"
+
+NSError *error = nil;
+
+SBJSON *json = [[SBJSON alloc] init];
+NSArray *results = [json objectWithString:aJsonString error:&amp;error];
+[json release];</pre></div>
+<ul>
+	<li>Returns an <code>NSDictionary</code> if the <span class="caps">JSON</span> string has one record</li>
+	<li>Returns an <code>NSArray</code> of <code>NSDictionary</code> objects if the <span class="caps">JSON</span> string has multiple records</li>
+</ul>
+</div>
+<div class="slide"><h1 class="exercise">1. Add the json-framework library</h1>
+<ol>
+	<li>Use Finder to locate the <code>code/staged/json-framework</code> directory</li>
+	<li>Drag and drop it on the <em>Classes</em> group in the <em>Groups &amp; Files</em> menu of your Xcode project
+	<ul>
+		<li>Make sure to select the <em>Copy items into destination group&#8217;s folder</em> option</li>
+	</ul></li>
+</ol>
+</div>
+<div class="slide"><h1 class="exercise">2. Create a Goal Class (.h)</h1>
+<p class="first"><code>Goal</code> is a client-side representation of the <code>Goal</code> resource on the server:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby">@interface Goal : NSObject {
+    NSString *name;
+    NSString *amount;
+    NSString *goalId;
+    NSDate *createdAt;
+    NSDate *updatedAt;
+}
+
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *amount;
+@property (nonatomic, copy) NSString *goalId;
+@property (nonatomic, retain) NSDate *createdAt;
+@property (nonatomic, retain) NSDate *updatedAt;
+
+- (id)initWithDictionary:(NSDictionary *)dictionary;
+
++ (NSArray *)findAllRemote;
+
+@end
+
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/2-json/Classes/Goal.h">../code/2-json/Classes/Goal.h</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">2. Create a Goal Class (.m)</h1>
+<p class="first">Don&#8217;t forget to synthesize and dealloc the properties:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby">#import "Goal.h"
+#import "SBJSON.h"
+
+@implementation Goal
+
+@synthesize name;
+@synthesize amount;
+@synthesize goalId;
+@synthesize createdAt;
+@synthesize updatedAt;
+
+- (void)dealloc {
+    [name release];
+    [amount release];
+    [goalId release];
+    [createdAt release];
+    [updatedAt release];
+	[super dealloc];
+}
+
+@end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/2-json/Classes/Goal.m">../code/2-json/Classes/Goal.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">3. Add a Goal Custom Initializer</h1>
+<p class="first">We need to be able to create a <code>Goal</code> from a dictionary:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby">- (id)initWithDictionary:(NSDictionary *)dictionary {
+    if (self = [super init]) {
+        self.name      = [dictionary valueForKey:@"name"];
+        self.amount    = [NSString stringWithFormat:@"%@", 
+                             [dictionary valueForKey:@"amount"]];
+        self.goalId    = [dictionary valueForKey:@"id"];
+        self.createdAt = [dictionary valueForKey:@"created_at"];
+        self.updatedAt = [dictionary valueForKey:@"updated_at"];
+    }
+    return self;
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/2-json/Classes/Goal.m">../code/2-json/Classes/Goal.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">3. Add a Goal Finder Method</h1>
+<p class="first">Send a <span class="caps">GET</span> request, parse the <span class="caps">JSON</span> response, and create <code>Goal</code> objects:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby">+ (NSArray *)findAllRemote {
+    NSURL *url = [NSURL URLWithString:@"http://localhost:3000/goals.json"];
+    
+    NSError *error = nil;
+    
+    NSString *jsonString = 
+        [NSString stringWithContentsOfURL:url 
+                                 encoding:NSUTF8StringEncoding 
+                                    error:&amp;error];
+    
+    NSMutableArray *goals = [NSMutableArray array];
+    if (jsonString) {
+        SBJSON *json = [[SBJSON alloc] init];    
+        NSArray *results = [json objectWithString:jsonString error:&amp;error];
+        [json release];
+        
+        for (NSDictionary *dictionary in results) {
+            Goal *goal = [[Goal alloc] initWithDictionary:dictionary];
+            [goals addObject:goal];
+            [goal release];
+        }
+    }
+    return goals;    
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/2-json/Classes/Goal.m">../code/2-json/Classes/Goal.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">4. Refresh the Table View</h1>
+<p class="first">Add a <code>refresh</code> action that fetches the goals and reloads the table:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: 3">- (IBAction)refresh {
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    self.goals = [Goal findAllRemote];
+    [self.tableView reloadData];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/2-json/Classes/GoalsViewController.m">../code/2-json/Classes/GoalsViewController.m</a></div></p>
+<p class="first">Call <code>refresh</code> when the view is loaded:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: 7">- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.title = @"Goals";
+    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+ 
+    [self refresh];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/2-json/Classes/GoalsViewController.m">../code/2-json/Classes/GoalsViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">5. Configure the Table Cells</h1>
+<p class="first">Change each row to contain the respective goal&#8217;s name and amount:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby; highlight: [13,14,15,16]">    Goal *goal = [goals objectAtIndex:indexPath.row];
+    
+    cell.textLabel.text = goal.name;
+    cell.detailTextLabel.text = goal.amount;
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/2-json/Classes/GoalsViewController.m">../code/2-json/Classes/GoalsViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">6. Add a Refresh Button</h1>
+<p class="first">The refresh button messages our <code>refresh</code> action:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby; highlight: [7,8,9,10,11,12]">- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.title = @"Goals";
+    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    
+    UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc] 
+        initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+                             target:self 
+                             action:@selector(refresh)];
+    self.navigationItem.rightBarButtonItem = refreshButton;
+    [refreshButton release];
+ 
+    [self refresh];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/2-json/Classes/GoalsViewController.m">../code/2-json/Classes/GoalsViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">7. Run It!</h1>
+<ol>
+	<li>Add a goal (or two) in the Rails app</li>
+	<li>Hit the <em>Refresh</em> button in the iPhone app</li>
+	<li>The table view should reload with new goals</li>
+	<li>What happens when you delete a goal on the iPhone, then refresh?</li>
+</ol>
+<div class="hint">
+At this point, we&#8217;ve replicated the app in <code>code/2-json</code>
+</div>
+</div>
+<div class="title slide">
+<h1>Roll Your Own <span class="caps">REST</span> Library</h1>
+</div>
+<div class="slide"><h1>Task: <span class="caps">CRUD</span> a Resource</h1>
+<p><img src="../assets/images/table-crud-remote.png" alt="" /></p>
+</div>
+<div class="slide"><h1 class="exercise">1. Level Up!</h1>
+<ol>
+	<li>Switch to the iPhone app in the <code>code/3-scaffold</code> directory</li>
+	<li>Run it!
+	<ul>
+		<li>It supports adding new goals locally and updating local goals</li>
+		<li>But it doesn&#8217;t support creating, updating, and deleting remote goals</li>
+	</ul></li>
+	<li>Search for <span class="caps">TODO</span> to see why</li>
+</ol>
+</div>
+<div class="slide"><h1>Steps</h1>
+<ol>
+	<li>Write a custom <span class="caps">REST</span> library</li>
+	<li>Change <code>Goal</code> to include <span class="caps">CRUD</span> methods that delegate to the library</li>
+	<li>Update <code>GoalsViewController</code> to delete a remote goal</li>
+	<li>Update <code>GoalAddViewController</code> to create or update a remote goal</li>
+</ol>
+</div>
+<div class="slide"><h1>Synchronous Networking Basics</h1>
+<p class="first">1. Create a request from a <span class="caps">URL</span>:</p>
+<div class="code-small">
+<pre name="code" class="brush: objc">NSURL *url = [NSURL URLWithString:@"http://localhost:3000/goals.json"];
+NSURLRequest *request = [NSURLRequest requestWithURL:url];
+[request setHTTPMethod:@"GET"];</pre></div>
+<p>2. Send the request synchronously:</p>
+<div class="code-small">
+<pre name="code" class="brush: objc">NSURLResponse *response = nil;
+NSError *error = nil;
+
+NSData *responseData = 
+    [NSURLConnection sendSynchronousRequest:request returningResponse:&amp;response error:&amp;error];</pre></div>
+<p>3. Handle the returned data:</p>
+<div class="code-small">
+<pre name="code" class="brush: objc">NSString *responseString = 
+     [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];   </pre></div>
+</div>
+<div class="slide"><h1>Custom Resource Library</h1>
+<p class="first">To support <span class="caps">CRUD</span>, we need four standard verbs:</p>
+<div class="code-normal">
+<pre name="code" class="brush: ruby">#import &lt;Foundation/Foundation.h&gt;
+
+@interface Resource : NSObject {
+}
+
++ (NSString *)get:(NSString *)url;
++ (NSString *)post:(NSString *)body to:(NSString *)url;
++ (NSString *)put:(NSString *)body to:(NSString *)url;
++ (NSString *)delete:(NSString *)url;
+
+@end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/3-scaffold/Classes/Resource.h">../code/3-scaffold/Classes/Resource.h</a></div></p>
+</div>
+<div class="slide"><h1><span class="caps">REST</span> Verbs</h1>
+<p class="first">Implementation can be generalized:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby">+ (NSString *)get:(NSString *)url {
+    return [self sendBy:@"GET" to:url withBody:nil];
+}
+
++ (NSString *)post:(NSString *)body to:(NSString *)url {
+	return [self sendBy:@"POST" to:url withBody:body];
+}
+
++ (NSString *)put:(NSString *)body to:(NSString *)url {
+	return [self sendBy:@"PUT" to:url withBody:body];
+}
+
++ (NSString *)delete:(NSString *)url {
+    return [self sendBy:@"DELETE" to:url withBody:nil];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/3-scaffold/Classes/Resource.m">../code/3-scaffold/Classes/Resource.m</a></div></p>
+</div>
+<div class="slide"><h1>Synchronous Networking Revisted</h1>
+<div class="code-small">
+<pre name="code" class="brush: ruby">+ (NSString *)sendBy:(NSString *)method to:(NSString *)url withBody:(NSString *)body {
+	NSMutableURLRequest *request = 
+        [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
+    [request setHTTPMethod:method];
+    if (body) {
+        [request setHTTPBody:[body dataUsingEncoding:NSUTF8StringEncoding]];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    }
+    return [self sendRequest:request];
+}
+
++ (NSString *)sendRequest:(NSMutableURLRequest *)request {
+    NSHTTPURLResponse *response;
+    NSError *error;
+    
+    NSData *responseData = 
+        [NSURLConnection sendSynchronousRequest:request                         
+                              returningResponse:&amp;response 
+                                          error:&amp;error];
+    
+    NSString *responseString = 
+        [[NSString alloc] initWithData:responseData 
+                              encoding:NSUTF8StringEncoding];
+    [responseString autorelease];
+    
+    return responseString;
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/3-scaffold/Classes/Resource.m">../code/3-scaffold/Classes/Resource.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">2. Change Goal (.h)</h1>
+<p class="first">Define new <span class="caps">CRUD</span> methods:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: [17,18,19,20,21]">@interface Goal : NSObject {
+    NSString *name;
+    NSString *amount;
+    NSString *goalId;
+    NSDate *createdAt;
+    NSDate *updatedAt;
+}
+
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *amount;
+@property (nonatomic, copy) NSString *goalId;
+@property (nonatomic, retain) NSDate *createdAt;
+@property (nonatomic, retain) NSDate *updatedAt;
+
+- (id)initWithDictionary:(NSDictionary *)dictionary;
+
++ (NSArray *)findAllRemote;
+- (void)createRemote;
+- (void)updateRemote;
+- (void)saveRemote;
+- (void)destroyRemote;
+
+@end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/4-crud/Classes/Goal.h">../code/4-crud/Classes/Goal.h</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">3. Change Goal (.m)</h1>
+<p class="first">Implement <span class="caps">CRUD</span> methods to delegate to our custom <code>Resource</code> class:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby">- (void)createRemote {
+    NSString *url = 
+        [NSString stringWithFormat:@"%@/goals.json", siteURL];
+    [Resource post:[self params] to:url];
+}
+
+- (void)updateRemote {
+    NSString *url = 
+        [NSString stringWithFormat:@"%@/goals/%@.json", siteURL, self.goalId];
+    [Resource put:[self params] to:url];
+}
+
+- (void)saveRemote {
+	if (self.goalId == nil) {
+		[self createRemote];
+	} else {
+		[self updateRemote];
+	}
+}
+
+- (void)destroyRemote {
+    NSString *url = 
+        [NSString stringWithFormat:@"%@/goals/%@.json", siteURL, self.goalId];
+    [Resource delete:url];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/4-crud/Classes/Goal.m">../code/4-crud/Classes/Goal.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">4. Find the TODOs</h1>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: 7">- (void)tableView:(UITableView *)tableView 
+commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
+ forRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView beginUpdates]; 
+    if (editingStyle == UITableViewCellEditingStyleDelete) { 
+        Goal *goal = [goals objectAtIndex:indexPath.row];
+        // TODO: destroy remote goal
+        [goals removeObjectAtIndex:indexPath.row];
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
+                         withRowAnimation:UITableViewRowAnimationFade]; 
+    }
+    [tableView endUpdates]; 
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/3-scaffold/Classes/GoalsViewController.m">../code/3-scaffold/Classes/GoalsViewController.m</a></div></p>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: 4">-(IBAction)save {
+    goal.name = nameField.text;
+    goal.amount = amountField.text;
+    // TODO: create or update remote goal
+    [self.delegate didChangeGoal:goal];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/3-scaffold/Classes/GoalAddViewController.m">../code/3-scaffold/Classes/GoalAddViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">5. Fix the TODOs</h1>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: 7">- (void)tableView:(UITableView *)tableView 
+commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
+ forRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView beginUpdates]; 
+    if (editingStyle == UITableViewCellEditingStyleDelete) { 
+        Goal *goal = [goals objectAtIndex:indexPath.row];
+        [goal destroyRemote];
+        [goals removeObjectAtIndex:indexPath.row];
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] 
+                         withRowAnimation:UITableViewRowAnimationFade]; 
+    }
+    [tableView endUpdates]; 
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/4-crud/Classes/GoalsViewController.m">../code/4-crud/Classes/GoalsViewController.m</a></div></p>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: 4">-(IBAction)save {
+    goal.name = nameField.text;
+    goal.amount = amountField.text;
+    [goal saveRemote];
+    [self.delegate didChangeGoal:goal];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/4-crud/Classes/GoalAddViewController.m">../code/4-crud/Classes/GoalAddViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">6. Run It</h1>
+<ol>
+	<li>Open the Xcode console (<code>⇧ ⌘ R</code>)</li>
+	<li>Create a goal</li>
+	<li>Edit a goal</li>
+	<li>Delete a goal</li>
+	<li>See <span class="caps">GET</span>, <span class="caps">POST</span>, <span class="caps">PUT</span>, and <span class="caps">DELETE</span> requests in the console?</li>
+	<li>Is everything in sync with the Rails app?</li>
+</ol>
+<div class="hint">
+At this point, we&#8217;ve replicated the app in <code>code/4-crud</code>
+</div>
+</div>
+<div class="slide"><h1>Are We Done?!</h1>
+<ul>
+	<li>We have full <span class="caps">REST</span> interaction, but&#8230;</li>
+	<li>No error handling</li>
+	<li>No authentication support</li>
+	<li>Every request is synchronous</li>
+	<li>Answer: No!</li>
+</ul>
+</div>
+<div class="title slide">
+<h1>Asynchronous Networking</h1>
+</div>
+<div class="slide"><h1>Remember the Synchronous Way?</h1>
+<p class="first">1. Create a request from a <span class="caps">URL</span>:</p>
+<div class="code-small">
+<pre name="code" class="brush: objc">NSURL *url = [NSURL URLWithString:@"http://localhost:3000/goals.json"];
+NSURLRequest *request = [NSURLRequest requestWithURL:url];</pre></div>
+<p>2. Send the request synchronously:</p>
+<div class="code-small">
+<pre name="code" class="brush: objc">NSURLResponse *response = nil;
+NSError *error = nil;
+
+NSData *responseData = 
+    [NSURLConnection sendSynchronousRequest:request returningResponse:&amp;response error:&amp;error];</pre></div>
+<p>3. Handle the returned data:</p>
+<div class="code-small">
+<pre name="code" class="brush: objc">NSString *responseString = 
+     [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];   </pre></div>
+</div>
+<div class="slide"><h1>Forget the Synchronous Way!</h1>
+<ul>
+	<li>Synchronous requests block the iPhone UI&#8217;s main thread</li>
+	<li><strong>This is very bad!</strong></li>
+	<li>It may feel like your app has crashed or frozen</li>
+	<li>Users will curse you</li>
+</ul>
+</div>
+<div class="slide"><h1>Asynchronous Networking</h1>
+<p class="first">1. Create a request from a <span class="caps">URL</span>:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">NSURL *url = [NSURL URLWithString:@"http://localhost:3000/goals.json"];
+NSURLRequest *request = [NSURLRequest requestWithURL:url];</pre></div>
+<p>2. Send the request <em>asynchronously</em>, with a delegate:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">NSURLConnection *connection =
+    [[NSURLConnection alloc] initWithRequest:request delegate:self];</pre></div>
+</div>
+<div class="slide"><h1>Asynchronous Networking</h1>
+<p class="first">3. Handle the returned data in a delegate method:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">- (void)connection:(NSURLConnection *)connection 
+    didReceiveData:(NSData *)data {
+    if (receivedData == nil) {
+        receivedData = [[NSMutableData alloc] init];
+    }
+    [receivedData appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    // do something with receivedData
+}
+
+- (void)connection:(NSURLConnection *)connection 
+  didFailWithError:(NSError *)error {
+    // handle error
+}</pre></div>
+</div>
+<div class="slide"><h1>Operation Queues</h1>
+<ol class="incremental">
+<li><code>NSURLConnection</code> can run a network request asynchronously</li>
+<li>But what about other work you might want to run in the background?</li>
+<li>Concurrent programming is hard</li>
+<li>Operation queues make it easy to manage background tasks</li>
+</ol>
+</div>
+<div class="slide"><h1>Using Operation Queues</h1>
+<p class="first">1. Write a method you want to run asynchronously:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">- (void)doWork:(NSObject *)anArgument {
+    // do some work
+}</pre></div>
+<p>2. Wrap the method in an <code>NSInvocationOperation</code>:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">NSInvocationOperation *operation = [[NSInvocationOperation alloc] 
+        initWithTarget:self selector:@selector(doWork:) object:anArgument];</pre></div>
+<p>3. Add it to an <code>NSOperationQueue</code>:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+[queue addOperation:operation];
+[operation release];</pre></div>
+</div>
+<div class="slide"><h1>Respect the Main Thread</h1>
+<ul>
+	<li>The main thread encompasses the app&#8217;s main run loop</li>
+	<li>Always update the UI on the main thread</li>
+	<li>Contrived example of a method running in a separate thread:</li>
+</ul>
+<div class="code-medium">
+<pre name="code" class="brush: objc">- (void)doWork:(NSObject *)anArgument {
+    [self.tableView performSelectorOnMainThread:@selector(reloadData) 
+                                     withObject:nil 
+                                  waitUntilDone:NO];
+
+    [self.navigationController 
+        performSelectorOnMainThread:@selector(popViewControllerAnimated:) 
+                         withObject:[NSNumber numberWithBool:YES] 
+                      waitUntilDone:NO];
+          
+    [self performSelectorOnMainThread:@selector(deleteRowsAtIndexPaths:) 
+                           withObject:[NSArray arrayWithObject:indexPath]  
+                        waitUntilDone:NO]; 
+}                          </pre></div>
+</div>
+<div class="title slide">
+<h1>Off-The-Shelf <span class="caps">REST</span> Library</h1>
+</div>
+<div class="slide"><h1>Task: <span class="caps">CRUD</span> a Remote Resource</h1>
+<p class="first">Same UI, but with</p>
+<ul>
+	<li>Full <span class="caps">REST</span> support</li>
+	<li>Asynchronous networking</li>
+	<li>Better error handling</li>
+	<li>Basic authentication</li>
+</ul>
+</div>
+<div class="slide"><h1>Task: <span class="caps">CRUD</span> a Remote Resource</h1>
+<p><img src="../assets/images/table-crud-remote-async.png" alt="" /></p>
+</div>
+<div class="slide"><h1>HTTPRiot</h1>
+<ul>
+	<li><a href="http://github.com/caged/httpriot">HTTPRiot</a> is a simple <span class="caps">REST</span> library that makes it easy to interact with RESTful resources (inspired by <a href="http://github.com/jnunemaker/httparty">httparty</a>)</li>
+	<li>Asynchronous networking using operation queues and delegate methods</li>
+	<li>Responses are automatically converted to NSDictionary or NSArray objects</li>
+	<li>You decide what to do with the results&#8230;</li>
+</ul>
+</div>
+<div class="slide"><h1>HTTPRiot Configuration</h1>
+<p class="first">Base <span class="caps">URL</span> where your resources live:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">[HRRestModel setBaseURL:[NSURL URLWithString:@"http://your-server"]];</pre></div>
+<p>Delegate object that handles responses:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">[HRRestModel setDelegate:anObject]; </pre></div>
+<p>Optional bits:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">[HRRestModel setFormat:HRDataFormatXML];  // JSON by default
+
+[HRRestModel setBasicAuthWithUsername:@"mike" password:@"secret"];</pre></div>
+</div>
+<div class="slide"><h1>Sending <span class="caps">REST</span> Requests</h1>
+<div class="code-medium">
+<pre name="code" class="brush: objc">[HRRestModel getPath:@"/goals" withOptions:nil object:nil]; </pre></div>
+<div class="code-medium">
+<pre name="code" class="brush: objc">NSDictionary *params = [NSDictionary dictionaryWithObject:
+    [newGoal JSONRepresentation] forKey:@"body"]; 
+
+[HRRestModel postPath:@"/goals" withOptions:params object:nil]; </pre></div>
+<div class="code-medium">
+<pre name="code" class="brush: objc">NSDictionary *params = [NSDictionary dictionaryWithObject:
+    [updatedGoal JSONRepresentation] forKey:@"body"]; 
+
+[HRRestModel putPath:@"/goals/3" withOptions:params object:nil]; </pre></div>
+<div class="code-medium">
+<pre name="code" class="brush: objc">[HRRestModel deletePath:@"/goals/3" withOptions:nil object:nil];</pre></div>
+</div>
+<div class="slide"><h1>Delegate Methods: Success</h1>
+<p class="first">Results delivered in a callback method implemented by the delegate:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">- (void)restConnection:(NSURLConnection *)connection          
+    didReturnResource:(id)resource                   
+               object:(id)object {  
+    // resource is an array or dictionary        
+    for (id item in resource) {         
+      Goal *goal = [[Goal alloc] initWithDictionary:item];         
+    }
+}
+
+- (void)restConnection:(NSURLConnection *)connection 
+    didReceiveResponse:(NSHTTPURLResponse *)response 
+                object:(id)object {
+    // If you're interested in handling response codes
+}</pre></div>
+<div class="hint">
+You should read the source. It&#8217;s good, and at this point you&#8217;ll understand how it works.
+</div>
+</div>
+<div class="slide"><h1>Delegate Methods: Failure</h1>
+<p class="first">Delegate object should implement these methods, too:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">- (void)restConnection:(NSURLConnection *)connection        
+      didFailWithError:(NSError *)error                  
+                object:(id)object {     
+    // Handle connection errors: failure to connect to server, etc.
+}  
+
+- (void)restConnection:(NSURLConnection *)connection         
+       didReceiveError:(NSError *)error                    
+              response:(NSHTTPURLResponse *)response                  
+                object:(id)object {     
+    // Handle invalid responses: 404, 500, etc. 
+}  
+
+- (void)restConnection:(NSURLConnection *)connection    
+  didReceiveParseError:(NSError *)error            
+          responseBody:(NSString *)string {     
+    // Request was successful, but couldn't parse the 
+    // data returned by the server 
+} </pre></div>
+</div>
+<div class="slide"><h1 class="exercise">1. Level Up!</h1>
+<ol>
+	<li>Switch to the iPhone app in the <code>code/5-httpriot</code> directory</li>
+	<li>Create, edit, and delete a goal</li>
+	<li>Search for <code>HRRestModel</code> to see how it works</li>
+	<li>Better yet, let&#8217;s do some spelunking with the debugger&#8230;</li>
+</ol>
+</div>
+<div class="slide"><h1 class="exercise">2. Fetch Goals Asynchronously</h1>
+<p class="first">Set a breakpoint in the <code>refresh</code> action of <code>GoalsViewController.m</code>:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby; highlight: 4">- (IBAction)refresh {
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    [HRRestModel setDelegate:self];
+    [HRRestModel getPath:@"/goals" withOptions:nil object:nil];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/5-httpriot/Classes/GoalsViewController.m">../code/5-httpriot/Classes/GoalsViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">3. Handle the Response</h1>
+<p class="first">Set another breakpoint in the delegate method:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby; highlight: 6">- (void)restConnection:(NSURLConnection *)connection 
+     didReturnResource:(id)resource 
+                object:(id)object { 
+    NSMutableArray *remoteGoals = [[NSMutableArray alloc] init];
+    for (NSDictionary *dictionary in resource) {
+        Goal *remoteGoal = [[Goal alloc] initWithDictionary:dictionary];
+        [remoteGoals addObject:remoteGoal];
+        [remoteGoal release];
+    }
+    self.goals = remoteGoals;
+    [remoteGoals release];
+
+    [self.tableView reloadData];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/5-httpriot/Classes/GoalsViewController.m">../code/5-httpriot/Classes/GoalsViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">4. Debug</h1>
+<ul>
+	<li><em>Build and Debug</em> the app</li>
+	<li>Which thread is the <code>refresh</code> method running in?</li>
+	<li>Which thread is the <code>restConnection:didReturnResource:object:</code> method running in?</li>
+	<li>How would you verify that it&#8217;s asynchronous?</li>
+</ul>
+</div>
+<div class="slide"><h1 class="exercise">5. Save Goals Asynchronously</h1>
+<p class="first">Set a breakpoint in the <code>save</code> action of <code>GoalAddViewController.m</code>:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: [11,13,14]">-(IBAction)save {
+    goal.name = nameField.text;
+    goal.amount = amountField.text;
+    
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    
+    NSDictionary *options = 
+        [NSDictionary dictionaryWithObject:[goal JSONRepresentation] forKey:@"body"];
+    
+    if (goal.goalId == nil) {
+        [HRRestModel postPath:@"goals" withOptions:options object:nil];
+    } else {
+        [HRRestModel putPath:[NSString stringWithFormat:@"goals/%@", goal.goalId] 
+                 withOptions:options object:nil];
+    }
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/5-httpriot/Classes/GoalAddViewController.m">../code/5-httpriot/Classes/GoalAddViewController.m</a></div></p>
+</div>
+<div class="slide"><h1 class="exercise">6. Handle Saving Goals</h1>
+<p class="first">Set another breakpoint in the delegate method:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: 5">- (void)restConnection:(NSURLConnection *)connection 
+     didReturnResource:(id)resource 
+                object:(id)object { 
+    
+    Goal *remoteGoal = [[Goal alloc] initWithDictionary:resource];
+    [self.delegate didChangeGoal:remoteGoal];
+    [remoteGoal release];
+    
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    [self.navigationController popViewControllerAnimated:YES];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/5-httpriot/Classes/GoalAddViewController.m">../code/5-httpriot/Classes/GoalAddViewController.m</a></div></p>
+<p>Run it, and use the debugger to fully understand how it works.</p>
+</div>
+<div class="slide"><h1>Building the HTTPRiot <span class="caps">SDK</span></h1>
+<p class="first">1. Download, build, and install it:</p>
+<div class="code-normal">
+<pre name="code" class="brush: session">$ git clone http://github.com/Caged/httpriot.git
+$ cd httpriot
+$ mkdir pkg
+$ gem install versionomy
+$ rake sdk:dist
+$ rake sdk:install</pre></div>
+</div>
+<div class="slide"><h1>Building the HTTPRiot <span class="caps">SDK</span></h1>
+<p class="first">2. Set the <em>Additional SDKs</em> build setting to:</p>
+<div class="code-small">
+<pre name="code" class="brush: session">~/Library/SDKs/httpriot-0.6.10/$(PLATFORM_NAME)$(IPHONEOS_DEPLOYMENT_TARGET).sdk</pre></div>
+<p>3. Set the <em>Other Linker Flags</em> build setting to:</p>
+<div class="code-small">
+<pre name="code" class="brush: session">-lhttpriot -lxml2 -ObjC -all_load</pre></div>
+<p>4. Set the <em>Header Search Paths</em> build setting to:</p>
+<div class="code-small">
+<pre name="code" class="brush: session">/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS3.2.sdk/usr/include/libxml2</pre></div>
+</div>
+<div class="slide"><h1>ASIHTTPRequest</h1>
+<ul>
+	<li><a href="http://allseeing-i.com/ASIHTTPRequest/">ASIHTTPRequest</a> is a flexible, low-level library with tons of features</li>
+	<li>File uploads, post form-encoded data, basic authentication, progress indictors, etc.</li>
+	<li>Synchronous and asynchronous requests</li>
+	<li>Not necessarily a <span class="caps">REST</span> library</li>
+	<li>Doesn&#8217;t automatically convert <span class="caps">JSON</span> and <span class="caps">XML</span></li>
+	<li>Highly recommended, though</li>
+</ul>
+</div>
+<div class="slide"><h1>ASIHTTPRequest Example</h1>
+<div class="code-small">
+<pre name="code" class="brush: objc">- (void)get {    
+    NSURL *url = [NSURL URLWithString:@"http://your-server.com/goals.json"];    
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];    
+    [request setDelegate:self];    
+    [request startAsynchronous];  
+}   
+
+- (void)post:(NSString *postDataString) {
+  NSURL *url = [NSURL URLWithString:@"http://your-server.com/goals.json"];
+  ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+  [request setRequestMethod:@"POST"];
+  [request appendPostData:[postDataString dataUsingEncoding:NSUTF8StringEncoding]];
+  [request setDelegate:self];    
+  [request startAsynchronous];
+}
+
+- (void)requestFinished:(ASIHTTPRequest *)request {    
+    NSString *response = [request responseString]; 
+}   
+
+- (void)requestFailed:(ASIHTTPRequest *)request {
+    NSError *error = [request error]; 
+}</pre></div>
+</div>
+<div class="title slide">
+<h1>Nested Resources</h1>
+</div>
+<div class="slide"><h1>Task: Goals and Credits</h1>
+<p><img src="../assets/images/nested-resources.png" alt="" /></p>
+</div>
+<div class="slide"><h1>ObjectiveResource</h1>
+<ul>
+	<li><a href="http://github.com/yfactorial/objectiveresource">ObjectiveResource</a> is an Objective-C port of <a href="http://api.rubyonrails.org/classes/ActiveResource/Base.html">ActiveResource</a></li>
+	<li>Automatically serializes/deserializes objects (to/from <span class="caps">JSON</span> or <span class="caps">XML</span>)</li>
+	<li>Assumes Rails&#8217; RESTful conventions</li>
+	<li>Supports nested resources</li>
+	<li>Synchronous, but with asynchronous option</li>
+</ul>
+</div>
+<div class="slide"><h1>Remote Resource (.h)</h1>
+<p class="first">Remote methods added to <code>NSObject</code>:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">#import "ObjectiveResource.h"
+ 
+@interface Goal : NSObject {
+    NSString *name;
+    NSString *amount;
+    NSString *goalId;
+    NSDate *createdAt;
+    NSDate *updatedAt;
+}
+ 
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *amount;
+@property (nonatomic, copy) NSString *goalId;
+@property (nonatomic, retain) NSDate *createdAt;
+@property (nonatomic, retain) NSDate *updatedAt;
+ 
+@end</pre></div>
+</div>
+<div class="slide"><h1>Remote Resource (.m)</h1>
+<p class="first">Nothing special here:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">#import "Goal.h"
+
+@implementation Goal
+
+@synthesize name;
+@synthesize amount;
+@synthesize goalId;
+@synthesize createdAt;
+@synthesize updatedAt;
+
+- (void)dealloc {
+    [name release];
+    [amount release];
+    [goalId release];
+    [createdAt release];
+    [updatedAt release];
+    [super dealloc];
+}
+@end</pre></div>
+</div>
+<div class="slide"><h1>Configuration</h1>
+<div class="code-normal">
+<pre name="code" class="brush: objc">#import "ObjectiveResource.h"    
+  
+[ObjectiveResourceConfig setSite:@"http://your-server/"]; 
+[ObjectiveResourceConfig setResponseType:JSONResponse];</pre></div>
+</div>
+<div class="slide"><h1>Remote <span class="caps">CRUD</span> Operations</h1>
+<div class="code-normal">
+<pre name="code" class="brush: objc">NSArray *goals = [Goal findAllRemote]; </pre></div>
+<div class="code-normal">
+<pre name="code" class="brush: objc">Goal *goal = [[Goal alloc] init]; 
+goal.name = @"Tropical Vacation"; 
+[goal createRemote]; </pre></div>
+<div class="code-normal">
+<pre name="code" class="brush: objc">Goal *goal = [Goal findRemote:@"3"]; 
+goal.name = @"Donation";
+[goal updateRemote];</pre></div>
+<div class="code-normal">
+<pre name="code" class="brush: objc">[goal destroyRemote];</pre></div>
+</div>
+<div class="slide"><h1 class="exercise">1. Switcheroo</h1>
+<ol>
+	<li>Switch back to the iPhone app in the <code>code/4-crud</code> directory
+	<ul>
+		<li>This version uses our custom <code>Resource</code> class</li>
+	</ul></li>
+	<li>Copy it to a new directory so you don&#8217;t overwrite the original</li>
+</ol>
+</div>
+<div class="slide"><h1 class="exercise">2. Add the objectiveresource library</h1>
+<ol>
+	<li>Use Finder to locate the <code>code/staged/objectiveresource</code> directory</li>
+	<li>Drag and drop it on the <em>Classes</em> group in the <em>Groups &amp; Files</em> menu of your Xcode project
+	<ul>
+		<li>Make sure to select the <em>Copy items into destination group&#8217;s folder</em> option</li>
+	</ul></li>
+	<li>Delete the <code>json-framework</code> directory</li>
+	<li>Build as a sanity check</li>
+</ol>
+</div>
+<div class="slide"><h1 class="exercise">3. Clean House</h1>
+<ul>
+	<li>Import ObjectiveResource in <code>Goal.h</code>:</li>
+</ul>
+<div class="code-normal">
+<pre name="code" class="brush: objc">#import "ObjectiveResource.h"</pre></div>
+<ul>
+	<li>Remove all the custom <span class="caps">CRUD</span> methods in <code>Goal</code></li>
+</ul>
+<ul>
+	<li>Delete the <code>Resource</code> class</li>
+</ul>
+</div>
+<div class="slide"><h1 class="exercise">4. Configure ObjectiveResource</h1>
+<p class="first">In <code>SaveUpAppDelegate.m</code>, add an import:</p>
+<div class="code-normal">
+<pre name="code" class="brush: objc">#import "ObjectiveResourceConfig.h"</pre></div>
+<p>And configure ObjectiveResource in <code>application:didFinishLaunchingWithOptions:</code>:</p>
+<div class="code-normal">
+<pre name="code" class="brush: objc">[ObjectiveResourceConfig setSite:@"http://localhost:3000/"];
+[ObjectiveResourceConfig setResponseType:JSONResponse];</pre></div>
+</div>
+<div class="slide"><h1 class="exercise">5. Tweak Rails</h1>
+<p class="first">Add an initializer that includes:</p>
+<div class="code-normal">
+<pre name="code" class="brush: ruby">ActiveRecord::Base.include_root_in_json = true</pre></div>
+<div class="hint">
+<p>ObjectiveResource expects <span class="caps">JSON</span> responses to include the resource name</p>
+</div>
+</div>
+<div class="slide"><h1 class="exercise">6. Run It!</h1>
+<ol>
+	<li>Create, edit, and delete a goal</li>
+	<li>Watch the Rails log</li>
+	<li>Is everything in sync with the Rails app?</li>
+</ol>
+<div style="margin-top: 2em;">
+<ul>
+	<li>No visible app changes</li>
+	<li>Less code to maintain</li>
+	<li>But it&#8217;s synchronous&#8230;<br />
+</div></li>
+</ul>
+<div class="hint">
+At this point, we&#8217;ve replicated the app in <code>code/6-objectiveresource</code>
+</div>
+</div>
+<div class="slide"><h1>What We Have</h1>
+<p><img src="../assets/images/table-crud-remote.png" alt="" /></p>
+</div>
+<div class="slide"><h1>Asynchronous Way</h1>
+<ul>
+	<li>1.1 branch has a <code>ConnectionManager</code> singleton</li>
+	<li>It encapsulates an operation queue</li>
+	<li>We understand how it works:</li>
+</ul>
+<div class="code-medium">
+<pre name="code" class="brush: objc">- (void)runJob:(SEL)selector 
+      onTarget:(id)target 
+  withArgument:(id)argument {
+    
+    NSInvocationOperation *operation = [[NSInvocationOperation alloc] 
+        initWithTarget:target selector:selector object:argument];
+    [operationQueue addOperation:operation];
+    [operation release];
+}</pre></div>
+</div>
+<div class="slide"><h1 class="exercise">7. Send requests in background</h1>
+<p class="first">For example, change <code>refresh</code> from:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby">- (IBAction)refresh {
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    self.goals = [Goal findAllRemote];
+    [self.tableView reloadData];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+}</pre></div>
+<p>To run a background job instead:</p>
+<div class="code-small">
+<pre name="code" class="brush: objc; highlight: [4,5]">- (IBAction)refresh {
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+
+    [[ConnectionManager sharedInstance] runJob:@selector(fetchRemoteGoals)
+                                      onTarget:self];
+}</pre></div>
+</div>
+<div class="slide"><h1 class="exercise">8. Handle response async</h1>
+<p class="first">Write the method that runs on a separate thread:</p>
+<div class="code-medium">
+<pre name="code" class="brush: objc">- (void)fetchRemoteGoals {
+    self.goals = [Goal findAllRemote];
+     
+    [self.tableView performSelectorOnMainThread:@selector(reloadData)
+                                     withObject:nil
+                                  waitUntilDone:NO];
+
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+}</pre></div>
+<div class="hint">
+Remember: The UI should always be updated on the main thread.
+</div>
+</div>
+<div class="slide"><h1>But We Still Want This</h1>
+<p><img src="../assets/images/nested-resources.png" alt="" /></p>
+</div>
+<div class="slide"><h1 class="exercise">9. Switcheroo</h1>
+<ol>
+	<li>Switch to the final Rails app in the <code>code/rails_app</code> directory
+	<ul>
+		<li>This version has <code>Goal</code> and <code>Credit</code> resources (nested)</li>
+	</ul></li>
+	<li>Migrate the database and run it</li>
+	<li>Create an account and log in</li>
+	<li>Switch to the final iPhone app in the <code>code/iphone_app</code> directory
+	<ul>
+		<li>This version supports nested resources, asynchronous networking, and authentication</li>
+	</ul></li>
+	<li>Run it!</li>
+</ol>
+</div>
+<div class="slide"><h1>Nested Resource Routes</h1>
+<p class="first">The Rails app has a nested <code>Credit</code> resource:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby">Saveup::Application.routes.draw do |map|
+  
+  resources :goals do
+    resources :credits
+  end
+
+end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/rails_app/config/routes.rb">../code/rails_app/config/routes.rb</a></div></p>
+</div>
+<div class="slide"><h1>Credits Controller</h1>
+<p class="first">Credits are always accessed via a goal:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: [6,18]">class CreditsController &lt; ApplicationController
+
+  before_filter :find_goal
+
+  def show
+    @credit = @goal.credits.find(params[:id])
+
+    respond_to do |format|
+      format.html
+      format.xml  { render :xml  =&gt; @credit }
+      format.json { render :json =&gt; @credit }
+    end
+  end
+  
+protected
+
+  def find_goal
+    @goal = current_user.goals.find(params[:goal_id])
+  rescue ActiveRecord::RecordNotFound
+    flash[:error] = "Invalid goal."
+    redirect_to @goal
+  end
+  
+end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/rails_app/app/controllers/credits_controller.rb">../code/rails_app/app/controllers/credits_controller.rb</a></div></p>
+</div>
+<div class="slide"><h1>iPhone Credit Model (.h)</h1>
+<p class="first"><code>Credit</code> holds its respective <code>Goal</code> id:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby; highlight: [5,13]">#import "ObjectiveResource.h"
+
+@interface Credit : NSObject {
+    NSString *creditId;
+    NSString *goalId;
+    NSString *name;
+    NSString *amount;
+    NSDate   *updatedAt;
+    NSDate   *createdAt;
+}
+
+@property (nonatomic, copy) NSString *creditId;
+@property (nonatomic, copy) NSString *goalId;
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *amount;
+@property (nonatomic, retain) NSDate *updatedAt;
+@property (nonatomic, retain) NSDate *createdAt;
+
+@end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/iphone_app/Classes/Credit.h">../code/iphone_app/Classes/Credit.h</a></div></p>
+</div>
+<div class="slide"><h1>iPhone Credit Model (.h)</h1>
+<p class="first"><code>Credit</code> must override some methods to be nested:</p>
+<div class="code-tiny">
+<pre name="code" class="brush: ruby">@implementation Credit
+
+@synthesize creditId;
+@synthesize goalId;
+
++ (NSString *)getRemoteCollectionName {
+	return @"goals";
+}
+
+- (NSString *)nestedPath {
+	NSString *path = [NSString stringWithFormat:@"%@/credits", goalId];
+	if (creditId) {
+		path = [path stringByAppendingFormat:@"/%@", creditId];
+	}
+	return path;
+}
+
+- (BOOL)createRemoteWithResponse:(NSError **)aError {
+    return [self createRemoteAtPath:[[self class] getRemoteElementPath:[self nestedPath]] 
+                       withResponse:aError];
+}
+
+- (BOOL)updateRemoteWithResponse:(NSError **)aError {
+    return [self updateRemoteAtPath:[[self class] getRemoteElementPath:[self nestedPath]] 
+                       withResponse:aError];
+}
+
+- (BOOL)destroyRemoteWithResponse:(NSError **)aError {
+    return [self destroyRemoteAtPath:[[self class] getRemoteElementPath:[self nestedPath]] 
+                        withResponse:aError];
+}
+
+@end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/iphone_app/Classes/Credit.m">../code/iphone_app/Classes/Credit.m</a></div></p>
+</div>
+<div class="slide"><h1>Associating Goals and Credits</h1>
+<p class="first">On the iPhone side, <code>Goal</code> can find its remote credits:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby">@implementation Goal
+
+- (NSArray *)findAllRemoteCredits {
+	return [Credit findRemote:[NSString stringWithFormat:@"%@/%@", 
+                                goalId, @"credits"]];
+}
+
+@end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/iphone_app/Classes/Goal.m">../code/iphone_app/Classes/Goal.m</a></div></p>
+</div>
+<div class="slide"><h1>What We Have</h1>
+<p><img src="../assets/images/nested-resources.png" alt="" /></p>
+</div>
+<div class="title slide">
+<h1>Authentication</h1>
+</div>
+<div class="slide"><h1>Task: Remote Authentication</h1>
+<p><img src="../assets/images/authentication.png" alt="" /></p>
+</div>
+<div class="slide"><h1>Rails Authentication</h1>
+<p class="first">Controller needs to scope goals to the current user:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby; highlight: 3">class GoalsController &lt; ApplicationController
+
+  before_filter :login_required
+
+  def index
+    @goals = current_user.goals.all
+
+    respond_to do |format|
+      format.html
+      format.xml  { render :xml  =&gt; @goals }
+      format.json { render :json =&gt; @goals }
+    end
+  end
+
+end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/rails_app/app/controllers/goals_controller.rb">../code/rails_app/app/controllers/goals_controller.rb</a></div></p>
+</div>
+<div class="slide"><h1>Rails Authentication</h1>
+<p class="first">Filter challenges with <span class="caps">HTTP</span> basic authentication:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby; highlight: [10,11,12]">  def login_required
+    return if logged_in?
+      
+    respond_to do |format| 
+      format.html do
+        save_location
+        redirect_to login_url
+      end
+      format.any(:json, :xml) do
+        unless login_from_basic_auth
+          request_http_basic_authentication
+        end
+      end
+    end 
+  end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/rails_app/lib/authentication.rb">../code/rails_app/lib/authentication.rb</a></div></p>
+</div>
+<div class="slide"><h1>ObjectiveResource Configuration</h1>
+<p class="first">ObjectiveResource will automatically respond to authentication challenges:</p>
+<div class="code-normal">
+<pre name="code" class="brush: objc; highlight: [3,4]">[ObjectiveResourceConfig setSite:@"http://your-server/"]; 
+[ObjectiveResourceConfig setResponseType:JSONResponse]; 
+[ObjectiveResourceConfig setUser:@"mike"]; 
+[ObjectiveResourceConfig setPassword:@"secret"];</pre></div>
+</div>
+<div class="slide"><h1>Where Do You Store Credentials?</h1>
+<p class="first">Always store credentials in the iPhone keychain:</p>
+<div class="code-small">
+<pre name="code" class="brush: ruby">- (void)saveCredentialsToKeychain {
+    NSURLCredential *credentials = 
+        [NSURLCredential credentialWithUser:self.login
+                                   password:self.password
+                                persistence:NSURLCredentialPersistencePermanent];
+    
+    [[NSURLCredentialStorage sharedCredentialStorage]   
+        setCredential:credentials forProtectionSpace:[self protectionSpace]];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/iphone_app/Classes/User.m">../code/iphone_app/Classes/User.m</a></div></p>
+</div>
+<div class="slide"><h1>How Do You Authenticate?</h1>
+<p class="first">Try to create a remote <code>Session</code> (it&#8217;s a resource):</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby; highlight: [10]">- (BOOL)authenticate:(NSError **)error { 
+    if (![self hasCredentials]) {
+        return NO;
+    }
+    
+    Session *session = [[[Session alloc] init] autorelease];
+    session.login = self.login;
+    session.password = self.password;
+    
+    return [session createRemoteWithResponse:error];
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/iphone_app/Classes/User.m">../code/iphone_app/Classes/User.m</a></div></p>
+</div>
+<div class="slide"><h1>Logging In</h1>
+<p class="first">When the app launches, authenticate or show the login view:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby">- (void)login {
+    if ([self.user hasCredentials]) {
+        NSError *error = nil;
+        BOOL authenticated = [self.user authenticate:&amp;error];
+        if (authenticated == NO) {
+            [AppHelpers handleRemoteError:error];
+            [self showAuthentication:self.user];
+        }
+    } else {
+        [self showAuthentication:self.user];
+    }
+}
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/iphone_app/Classes/SaveUpAppDelegate.m">../code/iphone_app/Classes/SaveUpAppDelegate.m</a></div></p>
+</div>
+<div class="slide"><h1>Important Security Tip</h1>
+<p class="first">Be careful what you serialize by default from Rails:</p>
+<div class="code-medium">
+<pre name="code" class="brush: ruby">class User &lt; ActiveRecord::Base
+
+  def to_xml(options={})
+    default_serialization_options(options)
+    super(options)
+  end
+
+  def to_json(options={})
+    default_serialization_options(options)
+    super(options)
+  end
+  
+  def default_serialization_options(options={})
+    options[:only] = [:username, :user_id, :updated_at, :created_at]
+  end
+  
+end
+</pre><p></div><div class="codeurl"><a href="txmt://open?url=file:///Users/mike/work/projects/iphone-rails-tutorial/code/rails_app/app/models/user.rb">../code/rails_app/app/models/user.rb</a></div></p>
+</div>
+<div class="title slide">
+<h1>Caching and Syncing</h1>
+</div>
+<div class="slide"><h1>The Problem</h1>
+<p class="loud">Cache expiration is notoriously challenging</p>
+</div>
+<div class="slide"><h1>Simplest Possible Solution</h1>
+<p class="first">If you have a network connection:</p>
+<ol>
+	<li>When the app launches, assume the local data store is dirty</li>
+	<li>Blow away all the local data</li>
+	<li>Reload the local data using the remote <span class="caps">API</span></li>
+</ol>
+<p>If you don&#8217;t have a network connection:</p>
+<ul>
+	<li>Local data is quickly accessible, but read-only</li>
+</ul>
+<div class="hint">
+For small data sets, this may be good enough.
+</div>
+</div>
+<div class="slide"><h1>Ideal Solution</h1>
+<p class="first">Keep local and remote objects in sync:</p>
+<ol>
+	<li>Populate a local Core Data store initially with data from the remote <span class="caps">API</span></li>
+	<li>Keep local objects updated with remote changes</li>
+	<li>Keep remote objects updated with local changes</li>
+</ol>
+<div class="hint">
+Fully-functional app that&#8217;s not dependent on the network.
+</div>
+</div>
+<div class="slide"><h1>ObjectiveSync</h1>
+<ul>
+	<li><a href="http://github.com/yfactorial/objectivesync">ObjectiveSync</a> syncs all <span class="caps">CRUD</span> modifications between the client and server</li>
+	<li>Built on top of <em>SQLite Persistent Objects</em> (not Core Data)</li>
+	<li>Supports basic syncing with a single entity (no associations)</li>
+	<li>Still on the drawing board</li>
+</ul>
+</div>
+<div class="slide"><h1>RestfulCoreData</h1>
+<ul>
+	<li><a href="http://github.com/lukeredpath/RestfulCoreData">RestfulCoreData</a> is a work in progress by Luke Redpath
+	<ul>
+		<li>Read <a href="http://lukeredpath.co.uk/blog/synching-web-services-with-core-data.html">Synching web services with Core Data</a> for background</li>
+	</ul></li>
+	<li>Currently supports basic syncing with a single entity (no associations yet)</li>
+	<li>Uses HTTPRiot under the hood</li>
+	<li>He&#8217;s looking for community involvement with this project</li>
+</ul>
+</div>
+<div class="slide"><h1>CoreResource</h1>
+<ul>
+	<li><a href="http://coreresource.org/">CoreResource</a> automatically stores serialized resources locally using Core Data with object relationships intact</li>
+</ul>
+<ul>
+	<li>Uses ASIHTTPRequest under the hood</li>
+</ul>
+</div>
+<div class="slide"><h1>Additional Reading</h1>
+<ul>
+	<li><a href="http://metaskills.net/2010/2/12/synchronizing-core-data-with-rails-3-0-0-pre" title="3.0.0.pre">Synchronizing Core Data With Rails</a></li>
+</ul>
+</div>
+<div class="title slide">
+<h1>What About the iPad?</h1>
+</div>
+<div class="slide"><h1>2x</h1>
+<p><img src="../assets/images/ipad.png" alt="" /></p>
+</div>
+<div class="slide"><h1>It&#8217;s Not Just a Big iPod Touch</h1>
+<ul class="incremental">
+<li>The iPad <em>is</em> a big iPod Touch</li>
+<li>It&#8217;s not <em>just</em> a big iPod Touch</li>
+<li>The UI experience is special on iPad</li>
+<li>This app would need to be redesigned for it</li>
+<li><strong>But the networking parts don&#8217;t change!</strong></li>
+</ul>
+</div>
+<div class="title slide">
+<h1>Wrap Up</h1>
+</div>
+<div class="slide"><h1>Now What?</h1>
+<ol class="incremental">
+<li>You now understand how these libraries work</li>
+<li>Choose what works best for your app</li>
+<li>Go make something cool already</li>
+<li>Have fun!</li>
+</ol>
+</div>
+<div class="slide"><h1>Books and Screencasts</h1>
+<ul>
+	<li><a href="http://pragprog.com/titles/amiphd/iphone-sdk-development">iPhone <span class="caps">SDK</span> Development</a></li>
+	<li><a href="http://pragprog.com/titles/dscpq/cocoa-programming">Cocoa Programming</a></li>
+	<li><a href="http://pragprog.com/titles/sfipad/ipad-programming">iPad Programming</a></li>
+	<li><a href="http://pragprog.com/screencasts/v-bdobjc/coding-in-objective-c-2-0">Coding in Objective-C 2.0</a></li>
+	<li><a href="http://pragprog.com/screencasts/v-mcxcode/becoming-productive-in-xcode">Becoming Productive in Xcode</a></li>
+</ul>
+<div style="margin-top: 1.5em;">
+<p><img src="../assets/images/books.png" alt="" /></p>
+</div>
+<div class="hint">
+35% off this week! Use coupon code <code>RailsConf2010-8943</code>
+</div>
+</div>
+<div class="slide"><h1>Hands-On Training</h1>
+<p><img src="../assets/images/pragmatic-studio.png" alt="" /></p>
+<div style="text-align: center; font-size: 1em;">
+<p><a href="http://pragmaticstudio.com">http://pragmaticstudio.com</a></p>
+</div></div>
+</div>
+
+<!-- Syntax Highlighter -->
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shCore.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushRuby.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushBash.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushXml.js"></script>
+<script class="javascript" src="../assets/syntaxhighlighter/scripts/shBrushObjectiveC.js"></script>
+<script language="javascript">
+  SyntaxHighlighter.defaults['gutter'] = false;
+  SyntaxHighlighter.defaults['toolbar'] = false;
+  SyntaxHighlighter.all();
+</script>
+</body>
+</html>
