@@ -8,16 +8,16 @@ class LabeledFormBuilder < ActionView::Helpers::FormBuilder
       if options[:hint] 
         hint = @template.content_tag(:span, options[:hint], :class => "hint")
       end
-      @template.content_tag(:p, field_label(field_name, *args) + super + hint)
+      @template.content_tag(:p, field_label(field_name, *args) + super(field_name, *args) + hint)
     end
   end
   
   def check_box(field_name, *args)
-    @template.content_tag(:p, super + " " + field_label(field_name, *args))
+    @template.content_tag(:p, super(field_name, *args) + " " + field_label(field_name, *args))
   end
   
   def submit(*args)
-    @template.content_tag(:p, super)
+    @template.content_tag(:p, super(*args))
   end
   
 private
