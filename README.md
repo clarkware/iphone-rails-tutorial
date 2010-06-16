@@ -1,38 +1,37 @@
 RailsConf 2010 Tutorial
 =======================
 
-Planning on attending my [Mobile App Development with iPhone/iPad and
-Rails](http://en.oreilly.com/rails2010/public/schedule/detail/14136) tutorial at RailsConf this year?  Great - I look forward to meeting you!
+This repo contains a workbook and source code for the 3-hour [Mobile App Development with iPhone/iPad and
+Rails](http://en.oreilly.com/rails2010/public/schedule/detail/14136) tutorial I taught at RailsConf 2010.
 
-Unfortunately, our time together is fairly limited.  Just like any well-run software project, we'll need to be mindful of scope.  Our overall goal is to build an iPhone app ([screenshots](http://github.com/clarkware/iphone-rails-tutorial/raw/master/screenshots/iphone-app.png)) that talks to a Rails app ([try it!](http://saveup.heroku.com/about)) using RESTful resources.  Along the way we'll explore several libraries and delve into topics such as authentication, nested resources, and asynchronous communication.  To do all that in three hours time, I'll assume that you have a basic working knowledge of Objective-C and a general understanding of iPhone table view programming.  
+The overall goal is to build a full-featured iPhone app ([screenshots](http://github.com/clarkware/iphone-rails-tutorial/raw/master/screenshots/iphone-app.png)) that talks to a Rails app ([try it!](http://saveup.heroku.com/about)) using RESTful resources.  Along the way we explore several libraries and delve into topics such as authentication, nested resources, and asynchronous communication.
 
-How do you know if you're ready? I'm glad you asked. In the <tt>code/1-bootstrap</tt>
-directory of this project you'll find a basic iPhone app that shows a read-only table of data.
-(No, you couldn't even charge 99 cents for this app.) 
+Workbook
+--------
 
-You're ready to attend if...
+To start working through the workbook, open the <tt>workbook/html/all.html</tt> file in your favorite browser.  Each section starts with an objective and includes steps to guide you to the solution.
 
-* You're able to run this app
-* You're comfortable with the Objective-C syntax used in this app
-* You understand the table view programming used in this app
+Source Code
+-----------
 
-New to iPhone programming and still want to attend?  You're welcome just the same! But you'll get more out of the tutorial if you spend some time preparing beforehand.  Below you'll find steps for installing required software and suggested resources to help you prepare for the tutorial.
+The <tt>code</tt> directory contains incremental versions of the iPhone app that correlate
+roughly to each section of the workbook. Check the <tt>README</tt> in each directory for more
+details.
 
-Please clone this repo to your laptop before attending so you have all the code and workbook handy.
-
-See you there...
-
-Mike Clark
+The final iPhone and Rails apps are in the <tt>iphone_app</tt> and <tt>rails_app</tt>
+directories, respectively.
 
 Install Rails 3 (beta)
 ----------------------
 
 You'll need the Rails 3 beta installed to run the sample Rails app:
 
-        $ gem install rails --pre
+  $ gem install rails --pre
         
 Install the iPhone SDK
 ----------------------
+
+You'll need the iPhone SDK to run the sample iPhone app:
 
 1. Make sure you've upgraded your Intel-based Mac laptop to run Snow Leopard (version 10.6.3), the latest Mac OS X release.
 
@@ -44,19 +43,20 @@ Install the iPhone SDK
 
 We'll be running the iPhone app on the iPhone Simulator during the tutorial, so becoming a registered iPhone developer is not required. However, if you want to run your apps on your iPhone or iPod Touch device, you'll need to join Apple's iPhone Developer program. The program costs $99/year for individuals.
 
-Learning Objective-C and iPhone Programming
--------------------------------------------
+New To iPhone Programming?
+--------------------------
 
-Everyone learns in a slightly different way.  I like to read a little or watch a screencast, tinker around with some code, and then dive right into a project.  I've given you some iPhone code to safely tinker around with.  And you probably already have an idea for a project.  In terms of reading books, I can only recommend what I've read and it's no surprise that I'm a tad biased.  Of course, there are many other fine books and screencasts.  Choose the resources that work best for you.
+The workbook assumes you have a basic working knowledge of Objective-C and a general understanding of iPhone table view programming.  If you're new to iPhone programming, here are some recommended resources to help you get started:
 
-* [Coding in Objective-C 2.0](http://pragprog.com/screencasts/v-bdobjc/coding-in-objective-c-2-0): a three-part screencast series by Bill Dudney
+* [iPhone SDK Training](http://pragmaticstudio.com/iphone): A 3-day, hands-on iPhone programming course.
 
-* [iPhone SDK Development book](http://pragprog.com/titles/amiphd/iphone-sdk-development): read through chapter 5 on table views 
+* [Coding in Objective-C 2.0](http://pragprog.com/screencasts/v-bdobjc/coding-in-objective-c-2-0): A three-part screencast series on Objective-C fundamentals by Bill Dudney
 
-* [Becoming Productive in Xcode](http://pragprog.com/screencasts/v-mcxcode/becoming-productive-in-xcode): a two-part screencast series by yours truly
+* [Becoming Productive in Xcode](http://pragprog.com/screencasts/v-mcxcode/becoming-productive-in-xcode): A two-part screencast series on how to be productive in Xcode by yours truly
 
-* [Introduction to The Objective-C Programming Language](http://developer.apple.com/mac/library/DOCUMENTATION/Cocoa/Conceptual/ObjectiveC/Introduction/introObjectiveC.html): the official Apple guide
+* [iPhone SDK Development](http://pragprog.com/titles/amiphd/iphone-sdk-development): A comprehensive book on iPhone programming
 
-* [Table View Programming Guide for iPhone OS](http://developer.apple.com/iphone/library/documentation/UserExperience/Conceptual/TableView_iPhone/AboutTableViewsiPhone/AboutTableViewsiPhone.html): the definitive Apple guide
+
+
 
 
