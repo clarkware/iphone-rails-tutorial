@@ -26,7 +26,7 @@ Install Rails 3 (beta)
 
 You'll need the Rails 3 beta installed to run the sample Rails app:
 
-  $ gem install rails --pre
+    $ gem install rails --pre
         
 Install the iPhone SDK
 ----------------------
@@ -41,12 +41,14 @@ You'll need the iPhone SDK to run the sample iPhone app:
 
 4. Xcode 3.2.2 is included in the full download of the iPhone SDK iPhone SDK 3.2. Verify that you're running Xcode version 3.2.2 by launching Xcode and using the <em>Xcode -> About Xcode</em> menu item. (You'll find Xcode under the <tt>/Developer/Applications</tt> directory.)
 
-We'll be running the iPhone app on the iPhone Simulator during the tutorial, so becoming a registered iPhone developer is not required. However, if you want to run your apps on your iPhone or iPod Touch device, you'll need to join Apple's iPhone Developer program. The program costs $99/year for individuals.
+If you want to run your apps on your iPhone or iPod Touch device, you'll need to join Apple's iPhone Developer program. The program costs $99/year for individuals.
 
 New To iPhone Programming?
 --------------------------
 
-The workbook assumes you have a basic working knowledge of Objective-C and a general understanding of iPhone table view programming.  If you're new to iPhone programming, here are some recommended resources to help you get started:
+The workbook assumes you have a basic working knowledge of Objective-C and a general
+understanding of iPhone table view programming. Here are some recommended resources to help you
+get started:
 
 * [iPhone SDK Training](http://pragmaticstudio.com/iphone): A 3-day, hands-on iPhone programming course.
 
