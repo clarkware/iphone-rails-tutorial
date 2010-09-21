@@ -45,7 +45,10 @@
 		}
 		
 		free(propList);
-		currentClass = [currentClass superclass];
+        
+        // Fix for iOS 4 (Mike Clark)
+		//currentClass = [currentClass superclass];
+        currentClass = nil;
 	}
 	return propertyNames;
 }
