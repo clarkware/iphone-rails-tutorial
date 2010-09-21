@@ -19,4 +19,3 @@ Saveup::Application.routes.draw do |map|
 
 end
 # END:routes
-
