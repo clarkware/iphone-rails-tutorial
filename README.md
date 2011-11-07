@@ -4,7 +4,7 @@ RailsConf 2010 Tutorial
 This repo contains a workbook and source code for the 3-hour [Mobile App Development with iPhone/iPad and
 Rails](http://en.oreilly.com/rails2010/public/schedule/detail/14136) tutorial I taught at RailsConf 2010.
 
-The overall goal is to build a full-featured iPhone app ([screenshots](http://github.com/clarkware/iphone-rails-tutorial/raw/master/screenshots/iphone-app.png)) that talks to a Rails app ([try it!](http://saveup.heroku.com/about)) using RESTful resources.  Along the way we explore several libraries and delve into topics such as authentication, nested resources, and asynchronous communication.
+The overall goal is to build a full-featured iPhone app ([screenshots](http://github.com/clarkware/iphone-rails-tutorial/raw/master/screenshots/iphone-app.png)) that talks to a Rails app using RESTful resources.  Along the way we explore several libraries and delve into topics such as authentication, nested resources, and asynchronous communication.
 
 Workbook
 --------
